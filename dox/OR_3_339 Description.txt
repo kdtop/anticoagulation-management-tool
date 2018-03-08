@@ -1,0 +1,102 @@
+This patch resolves the following problems:
+ 
+ 1. Implemented key filtering and range checking for daily dosages. Fixed 
+    problem with auto-calculation of daily dosage reported by Cincinnati
+    (Remedy Ticket #418906, PSPO #1813), and problem changing tablets in
+    daily dosing (Remedy Ticket #424310, PSPO #1823).
+ 
+ 2. Assure that cosigner is identified as primary provider in PCE, if user
+    is a non-Provider (e.g., Student, Pharmacy Tech, etc.). Remedy Ticket
+    #392179, & #406932, originally reported by Greater LA.
+ 
+ 3. Assure that Scheduled (in addition to Pending or Active) Consults get 
+    completed when Initial Note is filed. Remedy Ticket #404437, reported 
+    by Greater LA.
+ 
+ 4. Fixed problem with Other Indication not being "remembered" between 
+    sessions. Remedy Ticket #394637 item #1, and #396046, both reported by
+    VISN 2.
+ 
+ 5. Fixed division by zero error in Rosendaal Report, which occurs when 
+    patient has two consecutive INRs which are identical, one in-range and
+    one-out, due to goal range change. Remedy Ticket #439690, reported by
+    Denver and VISN 2.
+ 
+ 6. Fixed <UNDEFINED> error on start-up, which occurs when entering a New 
+    Patient whose most recent INR was cancelled. Remedy Ticket #420035,
+    reported by Denver.
+ 
+ 7. Fixed problem identified by Denver (Remedy Ticket #439768), where lab
+    orders were not being placed by Anticoagulator unless a note was also
+    written. This was happening because the Order Entry API requires an
+    Encounter Location, and the corresponding variable was only being set
+    if a note was also entered.
+ 
+ 8. Reno reported a problem (Remedy Ticket #439776), where changes in the
+    patient location were not being recorded when the user clicked on the
+    Save and Exit button. This has been corrected.
+ 
+ 9. The original application didn't allow INRs to be ordered for 
+    collection on the weekend. Denver reported that they often need to
+    order for weekend collection (Remedy Ticket #439782). The application
+    was modified to inform the user that the date they selected for the
+    next draw is a Saturday (or Sunday), and allow them to leave it or
+    change it, as they deem appropriate.
+ 
+ 
+PATIENT SAFETY REFERENCE
+========================
+1813, 1823
+ 
+ 
+RELATED CQ'S
+============
+None
+ 
+ 
+RELATED Remedy Tickets
+======================
+392179
+394637
+396046
+404437
+406932
+418906
+420035
+424310
+439690
+439768
+439776
+439782
+ 
+ 
+INSTALLATION INSTRUCTIONS:
+==========================
+This patch should be loaded during non-peak hours to minimize disruption
+to users.  Installation of the server-side routines will take less than
+1 minute.  Users may remain on the system.
+ 
+  1. Use the INSTALL/CHECK MESSAGE option on the PackMan menu.
+ 
+  2. From the Kernel Installation and Distribution System Menu, select
+     the Installation menu.
+ 
+  3. From this menu, you may elect to use the following options
+     (when prompted for INSTALL NAME, enter OR*3.0*339):
+        a.  Backup a Transport Global
+        b.  Compare Transport Global to Current System
+        c.  Verify Checksums in Transport Global
+ 
+  4. When prompted 'Want KIDS to INHIBIT LOGONs during the install? NO//'
+     respond NO.
+ 
+  5. When prompted 'Want to DISABLE Scheduled Options, Menu Options, and
+     Protocols? NO//', respond NO.
+ 
+ 
+POST-INSTALLATION INSTRUCTIONS:
+===============================
+Replace the windows executable file AntiCoagulate.exe which was deployed 
+during implementation of OR*3*307 with the new AntiCoagulate.exe file
+which is included with this patch, whether it was installed locally on the
+workstations of the clinicians who use it, or on a network drive.

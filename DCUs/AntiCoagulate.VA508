@@ -1,0 +1,562 @@
+P:\vista\AMT_AnticoagMgmtTool\fCosign.dfm
+3474/1277733572
+0
+32
+P:\vista\AMT_AnticoagMgmtTool\fAboutACM.dfm
+32201/1061907239
+32
+2
+P:\vista\AMT_AnticoagMgmtTool\fSplash.dfm
+165817/1278160283
+34
+17
+P:\vista\AMT_AnticoagMgmtTool\fPCE.dfm
+5133/1277860359
+51
+90
+P:\vista\AMT_AnticoagMgmtTool\mVisitRelated.dfm
+4240/1061907244
+141
+2
+P:\vista\AMT_AnticoagMgmtTool\fxBroker.dfm
+5317/1061907244
+143
+31
+P:\vista\AMT_AnticoagMgmtTool\fTimeout.dfm
+1646/1061907244
+174
+2
+P:\vista\AMT_AnticoagMgmtTool\fBridgeCommentsDialog.dfm
+2000/1277845965
+176
+2
+P:\vista\AMT_AnticoagMgmtTool\fAnticoagulator.dfm
+177455/1279024074
+178
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompletedVisitLetter.dfm
+4283/1277733572
+180
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEndAnticoagMgmt.dfm
+4031/1277667028
+182
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fStartAnticoagMgmt.dfm
+4037/1277278619
+184
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fMissedAppt.dfm
+2418/1277526660
+186
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompleteConsult.dfm
+1754/1277278839
+188
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fSignItem.dfm
+1385/1268617339
+190
+2
+P:\vista\AMT_AnticoagMgmtTool\fEditFlowsheet.dfm
+20477/1278631509
+192
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fReminder.dfm
+2047/1278508748
+194
+2
+P:\vista\AMT_AnticoagMgmtTool\fCosign.pas
+7775/1277734534
+196
+12
+P:\vista\AMT_AnticoagMgmtTool\fAboutACM.pas
+2353/1061907239
+208
+10
+P:\vista\AMT_AnticoagMgmtTool\fSplash.pas
+1587/1278160449
+218
+10
+P:\vista\AMT_AnticoagMgmtTool\fPCE.pas
+4153/1277860416
+228
+11
+P:\vista\AMT_AnticoagMgmtTool\mVisitRelated.pas
+7174/1061907244
+239
+10
+P:\vista\AMT_AnticoagMgmtTool\fxBroker.pas
+3757/1061907244
+249
+11
+P:\vista\AMT_AnticoagMgmtTool\fTimeout.pas
+1816/1061907244
+260
+10
+P:\vista\AMT_AnticoagMgmtTool\fBridgeCommentsDialog.pas
+578/1277845965
+270
+9
+P:\vista\AMT_AnticoagMgmtTool\fAnticoagulator.pas
+151894/1279024073
+279
+33
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompletedVisitLetter.pas
+19100/1277734552
+312
+12
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEndAnticoagMgmt.pas
+8120/1277667513
+324
+12
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fStartAnticoagMgmt.pas
+11990/1277278619
+336
+14
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fMissedAppt.pas
+3509/1277526660
+350
+11
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompleteConsult.pas
+2695/1277277568
+361
+11
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fSignItem.pas
+1719/1277277593
+372
+10
+P:\vista\AMT_AnticoagMgmtTool\fEditFlowsheet.pas
+6115/1278643621
+382
+11
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fReminder.pas
+4487/1278508748
+393
+11
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINRGoal.dfm
+5149/1278885948
+404
+2
+P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINRGoal.pas
+2240/1278885968
+406
+11
+|EOINDEX|
+144
+object frmCosign: TfrmCosign
+object AccessibilityManager: TVA508AccessibilityManager
+Left = 8
+Top = 174
+Data = (
+(
+'Component = frmCosign'
+'Status = stsDefault')
+(
+'Component = pnlButtons'
+'Status = stsDefault')
+(
+'Component = edtCoSign'
+'Text = Enter the co-signer'#39's name'
+'Status = stsOK')
+(
+'Component = pnlList'
+'Status = stsDefault')
+(
+'Component = lbCoSign'
+'Text = Select the co-signer'
+'Status = stsOK')
+(
+'Component = btnOK'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = btnCancel'
+'Property = Hint'
+'Status = stsOK'))
+end
+560
+object frmAboutACM: TfrmAboutACM
+2286
+object frmSplashACM: TfrmSplashACM
+object amSplash: TVA508AccessibilityManager
+Left = 7
+Top = 377
+Data = (
+(
+'Component = lblSplash'
+'Text = AntiCoagulation Management Flow Sheet'
+'Status = stsOK')
+(
+'Component = lblVersion'
+'Status = stsDefault')
+(
+'Component = frmSplashACM'
+'Status = stsDefault'))
+end
+205
+object frmPCE: TfrmPCE
+object amPCE: TVA508AccessibilityManager
+Left = 7
+Top = 179
+Data = (
+(
+'Component = btnCancel'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = btnOK'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = frmPCE'
+'Status = stsDefault')
+(
+'Component = pnlButtons'
+'Status = stsDefault')
+(
+'Component = pnlVisit'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.gbVisitRelatedTo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkSCYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkAOYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkIRYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkECYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkMSTYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkMSTNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkECNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkIRNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkAONo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkSCNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkHNCYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkHNCNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkCVYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkCVNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkSHDYes'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.chkSHDNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.lblSCNo'
+'Status = stsDefault')
+(
+'Component = fraVisitRelated.lblSCYes'
+'Status = stsDefault')
+(
+'Component = pnlForm'
+'Status = stsDefault')
+(
+'Component = memSvcConn'
+'Status = stsDefault'))
+end
+195
+object fraVisitRelated: TfraVisitRelated
+182
+object frmBroker: TfrmBroker
+object amgrMain: TVA508AccessibilityManager
+Data = (
+(
+'Component = lblCallID'
+'Status = stsDefault')
+(
+'Component = txtMaxCalls'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = btnRLT'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = udMax'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = frmBroker'
+'Status = stsDefault')
+(
+'Component = cmdPrev'
+'Property = Hint'
+'Status = stsOK')
+(
+'Component = cmdNext'
+'Property = Hint'
+'Status = stsOK'))
+end
+73
+object frmTimeout: TfrmTimeout
+93
+object frmBridgeCommentDlg: TfrmBridgeCommentDlg
+4929
+object frmAnticoagulate: TfrmAnticoagulate
+193
+object frmCompletedVisitLetter: TfrmCompletedVisitLetter
+181
+object frmEndAnticoagationManagement: TfrmEndAnticoagationManagement
+181
+object frmStartAnticoagationManagement: TfrmStartAnticoagationManagement
+110
+object frmMissedAppt: TfrmMissedAppt
+76
+object frmCompleteConsult: TfrmCompleteConsult
+67
+object frmSignItem: TfrmSignItem
+422
+object frmEditFlowsheetEntry: TfrmEditFlowsheetEntry
+94
+object frmReminder: TfrmReminder
+unit fCosign;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ORCtrls, ExtCtrls, ORNet, ORFn, Trpcb,
+  uTypes, StrUtils,
+  VA508AccessibilityManager;
+
+type
+  TfrmCosign = class(TForm)
+unit fAboutACM;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, VA508AccessibilityManager, jpeg;
+
+type
+  TfrmAboutACM = class(TForm)
+unit fSplash;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls, VA508AccessibilityManager, VA508AccessibilityRouter, jpeg;
+
+type
+  TfrmSplashACM = class(TForm)
+unit fPCE;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ORFn, VA508AccessibilityManager, ExtCtrls, mPCE,
+  mVisitRelated;
+
+type
+  TfrmPCE = class(TForm)
+unit mVisitRelated;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, mPCE;
+
+type
+  TfraVisitRelated = class(TFrame)
+unit fxBroker;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, DateUtils, ORNet, ORFn, ComCtrls, Buttons, ExtCtrls,
+  ORCtrls, ORSystem, VA508AccessibilityManager;
+
+type
+  TfrmBroker = class(TForm)
+unit fTimeout;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls, ORFn, VA508AccessibilityManager;
+
+type
+  TfrmTimeout = class(TForm)
+unit fBridgeCommentsDialog;
+
+interface
+
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ExtCtrls, VA508AccessibilityManager;
+
+type
+  TfrmBridgeCommentDlg = class(TForm)
+unit fAnticoagulator;
+
+
+(* ----
+NOTE: From K. Toppenberg.  1/28/18
+When working with this code, my Delphi 2006 became unstable.  I wanted to
+transition the code to Delphi 10.  But I could not seem to get the VA controls
+installed.  At this time, I don't think the VA supports Delphi 10.
+
+As a result, I am cutting out dependency on installed VA controls.  This includes
+the 508 accessibility stuff and screen reader stuff.
+My intent is to use this only in my office. But if there is a future desire to
+use it elsewhere, this functionality would need to be ported back in.
+
+I appologize to anyone needing this functionality.  I don't have resources to
+support 508 stuff right now, outside the VA.
+
+------*)
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, RpRender, RpRenderCanvas,RPCConf1, RpRenderPrinter, RpDefine, RpCon,
+  RpRave, RpBase, RpSystem, Trpcb, ORNet,ORFn, ORDtTm, TeEngine,
+  Series, ExtCtrls, TeeProcs, Chart, ComCtrls, Grids, Hash, DateUtils,StrUtils,
+  ORCtrls, fCosign, ExtDlgs, fSplash, {VA508AccessibilityManager,} fTimeout, uInit,
+  uTMGMods, rRPCs, uFlowsheet, uTypes, uPastINRs,   //kt
+  uHTMLTools, TMGHTML2, Math, //kt
+  Menus, Mask, Buttons, VA508AccessibilityManager;
+
+type
+  TfrmAnticoagulate = class(TForm)
+unit fCompletedVisitLetter;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls,
+  ORCtrls, ORFn, ORNet, Trpcb,
+  uTypes, uHTMLTools, TMGHTML2;
+
+type
+  TfrmCompletedVisitLetter = class(TForm)
+unit fEndAnticoagMgmt;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, grids,
+  StdCtrls, StrUtils, Math, DateUtils, rRPCs, fCosign,
+  ORCtrls, ORFn, ORNet, Trpcb, uTypes, VA508AccessibilityManager,
+  uHTMLTools, TMGHTML2, ComCtrls, ExtCtrls;
+
+type
+  TfrmEndAnticoagationManagement = class(TForm)
+unit fStartAnticoagMgmt;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, grids,
+  StdCtrls, StrUtils, Math, DateUtils,
+  ORCtrls, ORFn, ORNet, Trpcb,
+  rRPCs,
+  uHTMLTools, TMGHTML2, ComCtrls, ExtCtrls;
+
+
+type
+  TfrmStartAnticoagationManagement = class(TForm)
+unit fMissedAppt;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  uHTMLTools, TMGHTML2,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls;
+
+type
+  TfrmMissedAppt = class(TForm)
+unit fCompleteConsult;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  ORFn, uTypes,
+  Dialogs, StdCtrls, ExtCtrls;
+
+type
+  TfrmCompleteConsult = class(TForm)
+unit fSignItem;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ORFn, ORCtrls, ExtCtrls, Hash;
+
+type
+  TfrmSignItem = class(TForm)
+unit fEditFlowsheet;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  ORCtrls, ORFn, ORNet, Trpcb, uTypes, uFlowsheet, 
+  Dialogs, StdCtrls, ComCtrls, Buttons;
+
+type
+  TfrmEditFlowsheetEntry = class(TForm)
+unit fReminder;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ComCtrls,
+  ORCtrls, ORFn, ORNet, Trpcb, uTypes;
+
+type
+  TfrmReminder = class(TForm)
+123
+object frmCustomINRGoal: TfrmCustomINRGoal
+unit fCustomINRGoal;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons,
+  ORFn;
+
+type
+  TfrmCustomINRGoal = class(TForm)

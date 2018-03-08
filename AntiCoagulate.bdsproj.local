@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/12/05 12:23:38.750.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\fEditNote.pas</Transaction>
+    <Transaction>2017/12/05 12:23:38.750.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\fEditNote.dfm</Transaction>
+    <Transaction>2017/12/06 14:27:13.343.pas,P:\vista\AMT_AnticoagMgmtTool\fEditNote.pas=</Transaction>
+    <Transaction>2017/12/06 14:27:13.355.dfm,P:\vista\AMT_AnticoagMgmtTool\fEditNote.dfm=</Transaction>
+    <Transaction>2017/12/06 14:42:22.268.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uTMGMods.pas</Transaction>
+    <Transaction>2017/12/16 20:59:32.207.pas,P:\vista\AMT_AnticoagMgmtTool\fAnticoagulator.pas=</Transaction>
+    <Transaction>2017/12/16 20:59:32.210.dfm,P:\vista\AMT_AnticoagMgmtTool\fAnticoagulator.dfm=</Transaction>
+    <Transaction>2017/12/24 14:32:47.168.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompletedVisitLetter.pas</Transaction>
+    <Transaction>2017/12/24 14:32:47.168.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompletedVisitLetter.dfm</Transaction>
+    <Transaction>2017/12/24 15:26:31.532.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEndAnticoagMgmt.pas</Transaction>
+    <Transaction>2017/12/24 15:26:31.532.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEndAnticoagMgmt.dfm</Transaction>
+    <Transaction>2017/12/24 15:51:24.020.pas,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fStartAnticoagMgmt.pas=</Transaction>
+    <Transaction>2017/12/24 15:51:24.023.dfm,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fStartAnticoagMgmt.dfm=</Transaction>
+    <Transaction>2017/12/24 16:22:13.908.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\rRPCs.pas</Transaction>
+    <Transaction>2017/12/24 16:35:51.526.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fMissedAppt.pas</Transaction>
+    <Transaction>2017/12/24 16:35:51.526.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fMissedAppt.dfm</Transaction>
+    <Transaction>2017/12/24 16:49:21.960.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompleteConsult.pas</Transaction>
+    <Transaction>2017/12/24 16:49:21.961.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompleteConsult.dfm</Transaction>
+    <Transaction>2017/12/24 17:49:47.509.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\fEditFlowsheet.pas</Transaction>
+    <Transaction>2017/12/24 17:49:47.509.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\fEditFlowsheet.dfm</Transaction>
+    <Transaction>2017/12/28 22:06:19.765.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\uFlowsheetData.pas</Transaction>
+    <Transaction>2017/12/29 16:47:53.484.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uTypes.pas</Transaction>
+    <Transaction>2018/01/01 20:57:45.010.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fReminder.pas</Transaction>
+    <Transaction>2018/01/01 20:57:45.010.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fReminder.dfm</Transaction>
+    <Transaction>2018/01/01 21:07:59.861.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uUtility.pas</Transaction>
+    <Transaction>2018/01/22 11:54:51.041.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uFlowsheet.pas</Transaction>
+    <Transaction>2018/01/22 11:59:23.178.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\uPastINRs.pas</Transaction>
+    <Transaction>2018/01/22 12:19:36.936.pas,P:\vista\AMT_AnticoagMgmtTool\uFlowsheetData.pas=</Transaction>
+    <Transaction>2018/01/24 06:09:21.027.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINR.pas</Transaction>
+    <Transaction>2018/01/24 06:09:21.041.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINR.dfm</Transaction>
+    <Transaction>2018/01/24 06:10:38.053.pas,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINR.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINRGoal.pas</Transaction>
+    <Transaction>2018/01/24 06:10:38.053.dfm,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINR.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINRGoal.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

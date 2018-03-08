@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2017/12/05 12:23:38.750.pas,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\fEditNote.pas</Transaction>
+    <Transaction>2017/12/05 12:23:38.750.dfm,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\fEditNote.dfm</Transaction>
+    <Transaction>2018/01/28 16:59:07.000.723,P:\vista\TMGCPRS v30A - GOOD\CPRS-Lib\ORFn.pas=</Transaction>
+    <Transaction>2018/01/28 16:59:14.000.113,P:\vista\TMGCPRS v30A - GOOD\CPRS-Lib\ORNet.pas=</Transaction>
+    <Transaction>2018/01/28 17:04:30.000.700,=P:\vista\AMT_AnticoagMgmtTool\BDK\Source\Trpcb.pas</Transaction>
+    <Transaction>2018/01/28 17:40:21.000.177,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\Hash.pas=</Transaction>
+    <Transaction>2018/01/31 10:36:30.000.307,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/01/31 10:36:52.000.119,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fNewPatientInstructions.dfm=P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm</Transaction>
+    <Transaction>2018/01/31 10:36:52.000.119,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fNewPatientInstructions.pas=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/01/31 10:48:34.000.372,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/01/31 10:48:47.000.848,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fNewIndication.dfm=P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm</Transaction>
+    <Transaction>2018/01/31 10:48:47.000.848,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fNewIndication.pas=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/01/31 11:41:43.000.134,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/01/31 11:42:00.000.259,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fActivityDetail.dfm=P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm</Transaction>
+    <Transaction>2018/01/31 11:42:00.000.259,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fActivityDetail.pas=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/01 10:17:57.000.288,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/01 10:18:21.000.282,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fUnlockPatient.pas</Transaction>
+    <Transaction>2018/02/01 10:18:21.000.282,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fUnlockPatient.dfm</Transaction>
+    <Transaction>2018/02/01 11:35:57.000.140,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/01 11:36:17.000.092,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEditComplications.dfm</Transaction>
+    <Transaction>2018/02/01 11:36:17.000.092,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEditComplications.pas</Transaction>
+    <Transaction>2018/02/02 08:10:27.000.738,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/02 08:10:40.000.879,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fOutsideLab.pas=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/02 08:10:40.000.880,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fOutsideLab.dfm=P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm</Transaction>
+    <Transaction>2018/02/07 21:39:23.000.090,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/07 21:39:44.000.745,P:\vista\AMT_AnticoagMgmtTool\Unit1.pas=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fPatientInformation.pas</Transaction>
+    <Transaction>2018/02/07 21:39:44.000.745,P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fPatientInformation.dfm</Transaction>
+    <Transaction>2018/02/18 12:33:29.000.779,=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/18 12:35:04.000.556,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fViewFlowsheetGrid.dfm=P:\vista\AMT_AnticoagMgmtTool\Unit1.dfm</Transaction>
+    <Transaction>2018/02/18 12:35:04.000.556,P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fViewFlowsheetGrid.pas=P:\vista\AMT_AnticoagMgmtTool\Unit1.pas</Transaction>
+    <Transaction>2018/02/21 07:37:06.000.063,=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uEvaluateExpr.pas</Transaction>
+    <Transaction>2018/02/21 07:37:19.000.243,=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uParseBlocks.pas</Transaction>
+    <Transaction>2018/03/01 17:32:49.000.371,=P:\vista\AMT_AnticoagMgmtTool\TMGExtra\uHTMLTools.pas</Transaction>
+  </Transactions>
+</BorlandProject>
