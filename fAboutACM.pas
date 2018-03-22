@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, VA508AccessibilityManager, jpeg;
+  StdCtrls, ExtCtrls, {VA508AccessibilityManager,} jpeg;
 
 type
   TfrmAboutACM = class(TForm)

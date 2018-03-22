@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Dialogs, grids,
   StdCtrls, StrUtils, Math, DateUtils, ComCtrls, ExtCtrls, graphics,
-  ORCtrls, ORFn, ORNet, Trpcb, VA508AccessibilityManager, mPCE,
+  ORCtrls, ORFn, ORNet, Trpcb, {VA508AccessibilityManager,} mPCE,
   uHTMLTools, TMGHTML2, uFlowsheet, uPastINRs;
 
 type
@@ -78,6 +78,7 @@ const
 
 type
   TAppState = class; // forward, defined below
+  TNoteInfo = class;  // forward, defined below
 
   TPatient = class(TObject)
   // was initially a record...., so I'll leave in this file.
@@ -256,9 +257,10 @@ type
     ClinicFAX:                          string;
     SigName:                            string;
     SigTitle:                           string;
-    IntakeNote:                         string;
-    InterimNote:                        string;
-    DischargeNote:                      string;
+    IntakeNoteIEN:                      string;
+    InterimNoteIEN:                     string;
+    DischargeNoteIEN:                   string;
+    MissedApptNoteIEN:                  string;
     SimplePhoneCPT:                     string;
     SubsequentVisitCPT:                 string;
     ComplexPhoneCPT:                    string;
@@ -279,10 +281,16 @@ type
     Str0Pce13:                          string;
     Str2Pce2:                           string;
     IENIntakeNoteTemplate:              string;
+    NameIntakeNoteTemplate:             string;
     IENInterimNoteTemplate:             string;
+    NameInterimNoteTemplate:            string;
     IENDCNoteTemplate:                  string;
+    NameDCNoteTemplate:                 string;
     IENMissedApptNoteTemplate:          string;
+    NameMissedApptNoteTemplate:         string;
     IENNoteForPatientNoteTemplate:      string;
+    NameNoteForPatientNoteTemplate:     string;
+
     // ------------------------------------
     procedure Clear;
     procedure Assign(Source: TParameters);
@@ -294,14 +302,15 @@ type
   public
     EClinic                            : string;
     SvcCat                             : string;
-    NoteIEN                            : string;
-    FTitle                             : string;
+    //NoteIEN                            : string; //This is the IEN in 8925 of the note being saved for interaction.
+    //NoteTitleIEN                       : string;
     Cofactor                           : tCofactor;
-    CosignNeeded                       : boolean;
-    CosignerDUZ                        : string;
+    //CosignNeeded                       : boolean;
+    //CosignerDUZ                        : string;
+    NoteInfo                           : TNoteInfo;
     INROrderSelected                   : boolean;
     CBCOrderSelected                   : boolean;
-    AccessibilityManager               : TVA508AccessibilityManager; // owned elsewhere
+    //AccessibilityManager               : TVA508AccessibilityManager; // owned elsewhere
     Historical                         : boolean;
     OutsideLabDataEntered              : boolean;
     PCEProcedureStr                    : string;
@@ -326,16 +335,29 @@ type
     PCEData                            : TPCEData; // not owned here
     PctInGoalMode                      : tPctInGoalMode;
     // ---------------------
-    DocumentationDialogLaunched        : boolean;
 
     constructor Create();
     destructor Destroy(); override;
     procedure Clear();
     procedure Assign(Source: TAppState);
-    function CosignOK: boolean;
     //function DrawDaysRestrictionStr: string;
     property AppointmentShowStatusStr: string read GetAppointmentShowStatusStr;
 
+  end;
+
+  TNoteInfo = class(TObject)
+  private
+  public
+    NoteSL            : TStringList;
+    NoteIEN           : string;  //This is the IEN in 8925 of the note being saved for interaction.
+    CosignNeeded      : boolean;
+    CosignerDUZ       : string;
+    SaveSuccess       : boolean;
+    function CosignOK : boolean;
+    procedure Clear;
+    procedure Assign(Source : TNoteInfo);
+    constructor Create;
+    Destructor Destroy;
   end;
 
 
@@ -365,9 +387,10 @@ begin
   ClinicFAX                          := '';
   SigName                            := '';
   SigTitle                           := '';
-  IntakeNote                         := '';
-  InterimNote                        := '';
-  DischargeNote                      := '';
+  IntakeNoteIEN                      := '';
+  InterimNoteIEN                     := '';
+  DischargeNoteIEN                   := '';
+  MissedApptNoteIEN                  := '';
   SimplePhoneCPT                     := '';
   SubsequentVisitCPT                 := '';
   ComplexPhoneCPT                    := '';
@@ -413,9 +436,10 @@ begin
   ClinicFAX                          := Source.ClinicFAX;
   SigName                            := Source.SigName;
   SigTitle                           := Source.SigTitle;
-  IntakeNote                         := Source.IntakeNote;
-  InterimNote                        := Source.InterimNote;
-  DischargeNote                      := Source.DischargeNote;
+  IntakeNoteIEN                      := Source.IntakeNoteIEN;
+  InterimNoteIEN                     := Source.InterimNoteIEN;
+  DischargeNoteIEN                   := Source.DischargeNoteIEN;
+  MissedApptNoteIEN                  := Source.MissedApptNoteIEN;
   SimplePhoneCPT                     := Source.SimplePhoneCPT;
   SubsequentVisitCPT                 := Source.SubsequentVisitCPT;
   ComplexPhoneCPT                    := Source.ComplexPhoneCPT;
@@ -440,6 +464,12 @@ begin
   IENDCNoteTemplate                  := Source.IENDCNoteTemplate;
   IENMissedApptNoteTemplate          := Source.IENMissedApptNoteTemplate;
   IENNoteForPatientNoteTemplate      := Source.IENNoteForPatientNoteTemplate;
+
+  NameIntakeNoteTemplate             := Source.NameIntakeNoteTemplate;
+  NameInterimNoteTemplate            := Source.NameInterimNoteTemplate;
+  NameDCNoteTemplate                 := Source.NameDCNoteTemplate;
+  NameMissedApptNoteTemplate         := Source.NameMissedApptNoteTemplate;
+  NameNoteForPatientNoteTemplate     := Source.NameNoteForPatientNoteTemplate;
 end;
 
 // ======================================================
@@ -778,10 +808,10 @@ begin
   //FNextApptDate                         := 0;
   EClinic                               := '';
   SvcCat                                := 'A';
-  NoteIEN                               := '';
-  FTitle                                := '';
-  CosignNeeded                          := false;
-  CosignerDUZ                           := '';
+  //NoteIEN                               := '';
+  //NoteTitleIEN                          := '';
+  //CosignNeeded                          := false;
+  //CosignerDUZ                           := '';
   Cofactor                              := tcfUndef;
   INROrderSelected                      := false;
   CBCOrderSelected                      := false;
@@ -800,27 +830,17 @@ begin
   UserSelectedPillStrength              := false;
   ShowRetractedFlowsheets               := false;
   PctInGoalMode                         := igmNonComplex;
-  DocumentationDialogLaunched           := false;
-  //------------------
+
+  //------------------
   PATIENT.Clear;
   Provider.Clear;
   Parameters.Clear;
   PastINRValues.Clear;
   CurrentNewFlowsheet.Clear;
+  NoteInfo.Clear();
   if assigned(PCEData) then PCEData.Clear;
 end;
 
-function TAppState.CosignOK: boolean;
-begin
-  if CosignNeeded then
-  begin
-    Result := (StrToIntDef(CosignerDUZ, -1) > 0);
-  end
-  else
-  begin
-    Result := true;
-  end;
-end;
 
 {
 function TAppState.DrawDaysRestrictionStr: string;
@@ -846,14 +866,14 @@ procedure TAppState.Assign(Source: TAppState);
 begin
   EClinic                              := Source.EClinic;
   SvcCat                               := Source.SvcCat;
-  NoteIEN                              := Source.NoteIEN;
-  FTitle                               := Source.FTitle;
+  //NoteIEN                              := Source.NoteIEN;
+  //NoteTitleIEN                         := Source.NoteTitleIEN;
   Cofactor                             := Source.Cofactor;
-  CosignNeeded                         := Source.CosignNeeded;
-  CosignerDUZ                          := Source.CosignerDUZ;
+  //CosignNeeded                         := Source.CosignNeeded;
+  //CosignerDUZ                          := Source.CosignerDUZ;
   INROrderSelected                     := Source.INROrderSelected;
   CBCOrderSelected                     := Source.CBCOrderSelected;
-  AccessibilityManager                 := Source.AccessibilityManager;
+  //AccessibilityManager                 := Source.AccessibilityManager;
   Historical                           := Source.Historical;
   OutsideLabDataEntered                := Source.OutsideLabDataEntered;
   PCEProcedureStr                      := Source.PCEProcedureStr;
@@ -871,13 +891,14 @@ begin
   PCEData                              := Source.PCEData; // not doing an assign because not owned here
   ShowRetractedFlowsheets              := Source.ShowRetractedFlowsheets;
   PctInGoalMode                        := Source.PctInGoalMode;
-  DocumentationDialogLaunched          := Source.DocumentationDialogLaunched;
-  //----------
+  //----------
+
   Patient.Assign(Source.Patient);
   Provider.Assign(Source.Provider);
   Parameters.Assign(Source.Parameters);
   PastINRValues.Assign(Source.PastINRValues);
   CurrentNewFlowsheet.Assign(Source.CurrentNewFlowsheet);
+  NoteInfo.Assign(Source.NoteInfo);
 end;
 
 constructor TAppState.Create();
@@ -888,6 +909,7 @@ begin
   PastINRValues := TPastINRValues.Create();
   CurrentNewFlowsheet := TOneFlowsheet.Create();
   PctInGoalMode := igmNonComplex;
+  NoteInfo := TNoteInfo.Create();
   Clear;
 end;
 
@@ -898,6 +920,7 @@ begin
   Parameters.Free;
   PastINRValues.Free;
   CurrentNewFlowsheet.Free;
+  NoteInfo.Free;
 end;
 
 function TAppState.GetAppointmentShowStatusStr: string;
@@ -934,5 +957,46 @@ end;
 
 
 // ========================================================================
+
+function TNoteInfo.CosignOK : boolean;
+begin
+  if CosignNeeded then begin
+    Result := (StrToIntDef(CosignerDUZ, -1) > 0);
+  end else begin
+    Result := true;
+  end;
+end;
+
+procedure TNoteInfo.Clear;
+begin
+  NoteSL.Clear;
+  NoteIEN          := '';
+  CosignNeeded     := false;
+  CosignerDUZ      := '';
+  SaveSuccess      := false;
+end;
+
+procedure TNoteInfo.Assign(Source : TNoteInfo);
+begin
+  NoteSL.Assign(Source.NoteSL);
+  NoteIEN          := Source.NoteIEN;
+  CosignNeeded     := Source.CosignNeeded;
+  CosignerDUZ      := Source.CosignerDUZ;
+  SaveSuccess      := Source.SaveSuccess;
+end;
+
+constructor TNoteInfo.Create;
+begin
+  NoteSL := TStringList.Create;
+end;
+
+destructor TNoteInfo.Destroy;
+begin
+  NoteSL.Free;
+end;
+
+
+//==============================================================
+
 
 end.

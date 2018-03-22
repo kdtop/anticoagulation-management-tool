@@ -13,9 +13,7 @@ uses
   fBridgeCommentsDialog in 'fBridgeCommentsDialog.pas' {frmBridgeCommentDlg},
   uTMGMods in 'TMGExtra\uTMGMods.pas',
   fAnticoagulator in 'fAnticoagulator.pas' {frmAnticoagulate},
-  fCompletedVisitLetter in 'TMGExtra\fCompletedVisitLetter.pas' {frmCompletedVisitLetter},
-  fEndAnticoagMgmt in 'TMGExtra\fEndAnticoagMgmt.pas' {frmEndAnticoagationManagement},
-  fStartAnticoagMgmt in 'TMGExtra\fStartAnticoagMgmt.pas' {frmStartAnticoagationManagement},
+  fCompletedVisitNote in 'TMGExtra\fCompletedVisitNote.pas' {frmCompletedVisitNote},
   rRPCs in 'TMGExtra\rRPCs.pas',
   fMissedAppt in 'TMGExtra\fMissedAppt.pas' {frmMissedAppt},
   fCompleteConsult in 'TMGExtra\fCompleteConsult.pas' {frmCompleteConsult},
@@ -38,16 +36,22 @@ uses
   fViewFlowsheetGrid in 'TMGExtra\fViewFlowsheetGrid.pas' {frmViewFlowsheetGrid},
   uEvaluateExpr in 'TMGExtra\uEvaluateExpr.pas',
   uParseBlocks in 'TMGExtra\uParseBlocks.pas',
-  uHTMLTools in 'TMGExtra\uHTMLTools.pas';
+  uHTMLTools in 'TMGExtra\uHTMLTools.pas',
+  fAMTEditMemo in 'TMGExtra\fAMTEditMemo.pas' {frmAMTEditMemo},
+  fDischargeInfo in 'TMGExtra\fDischargeInfo.pas' {frmDischargeInfo};
 
 {$R *.RES}
 
+var
+  InitSuccess : boolean;
 begin
   Application.Initialize;
   SplashOpen;
   Application.Title := 'Anticoagulation Management';
   Application.HelpFile := 'Anticoag_help_file.hlp';
   Application.CreateForm(TfrmAnticoagulate, frmAnticoagulate);
+  InitSuccess := frmAnticoagulate.Initialize('');
   SplashClose;
-  if not AbortingExecution then Application.Run;
+  Application.Run;
+  //if not AbortingExecution then Application.Run;
 end.

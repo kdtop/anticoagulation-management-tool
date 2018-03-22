@@ -35,7 +35,5 @@ object frmEndAnticoagationManagement: TfrmEndAnticoagationManagement
     Caption = 'HTMl Editor will go here'
     Color = clActiveCaption
     TabOrder = 1
-    ExplicitTop = 89
-    ExplicitHeight = 371
   end
 end

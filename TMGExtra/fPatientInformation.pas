@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  uTypes, ORFn, StrUtils,
+  uTypes, ORFn, StrUtils, uFlowsheet,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
@@ -30,7 +30,6 @@ type
     rbStand: TRadioButton;
     ckbSA: TCheckBox;
     ckbNoStop: TCheckBox;
-    ckbDCFromClinic: TCheckBox;
     btnSExit: TButton;
     pnlRestrict: TPanel;
     lblRstrctDrawDays: TLabel;
@@ -47,6 +46,7 @@ type
     btnEditBridgingComments: TButton;
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
+    btnDischargeFromClinic: TBitBtn;
     procedure ckbAMmedsClick(Sender: TObject);
     procedure ckbBridgingClick(Sender: TObject);
     procedure btnEditBridgingCommentsClick(Sender: TObject);
@@ -66,7 +66,6 @@ type
     procedure edtSDateExit(Sender: TObject);
     procedure edtStopChange(Sender: TObject);
     procedure ckbNoStopClick(Sender: TObject);
-    procedure ckbDCFromClinicClick(Sender: TObject);
     procedure edtODateChange(Sender: TObject);
     procedure edtODateExit(Sender: TObject);
     procedure edtDurChange(Sender: TObject);
@@ -78,17 +77,20 @@ type
     procedure btnSExitClick(Sender: TObject);
     procedure edtODateEnter(Sender: TObject);
     procedure edtDurEnter(Sender: TObject);
+    procedure btnDischargeFromClinicClick(Sender: TObject);
   private
     { Private declarations }
     FPatient : TPatient;  //convience pointer.  Owned by FAppState;
     FAppState : TAppState;  //owned here
+    FFlowsheet : TOneFlowsheet;
     RestrictDayCheckboxArray : TWeekCheckBoxArray;
-    FLoadingData : boolean;
+    FPushingOutData : boolean;
     //function GetRestrictedDrawDaysStr : string;
-    procedure Initialize(AppState : TAppState);
+    procedure SetDischargeEnableStatus(Discharged : boolean);
+    procedure DataToGUI;
   public
     { Public declarations }
-    function ShowModal(AppState : TAppState) : integer; overload;
+    function ShowModal(AppState : TAppState; AFlowsheet : TOneFlowsheet) : integer; overload;
     //property RestrictedDrawDaysStr : string read GetRestrictedDrawDaysStr;
     property ModifiedAppState : TAppState read FAppState;
   end;
@@ -101,7 +103,7 @@ implementation
 {$R *.dfm}
 
 uses
-  fBridgeCommentsDialog, uFlowsheet, uUtility;
+  fBridgeCommentsDialog, uUtility, fDischargeInfo;
 
 
 function HasDrawDayRestrictions(WeekArray : TWeekBoolArray) : boolean;
@@ -115,14 +117,11 @@ begin
   end;
 end;
 
-procedure TfrmPatientInformation.Initialize(AppState : TAppState);
+procedure TfrmPatientInformation.DataToGUI;
 var
   AWeekDay : tDaysOfWeek;
-
 begin
-  FLoadingData := true;
-  FAppState.Assign(AppState);
-  FPatient := FAppState.Patient;
+  FPushingOutData := true;
 
   memSpecialInstructions.lines.Assign(FPatient.SpecialInstructionsSL);
   memPeople.Lines.Assign(FPatient.PersonsOKForMsgSL);
@@ -135,11 +134,14 @@ begin
   ckbSA.Checked := FPatient.SignedAgreement;
   btnEditBridgingComments.Visible := (FPatient.BridgingCommentsSL.Count > 0);
   edtStop.Text := FPatient.StopDate;
-  ckbDCFromClinic.Checked := (FPatient.StopDate = 'Inactive');  //Will trigger event
+  SetDischargeEnableStatus(FPatient.DischargedFromClinic);
   case FPatient.Complexity of
-    tpcStandard : rbStand.checked := true; //will trigger event
-    tpcComplex :  rbComplex.Checked := true;  //will trigger event
-    tpcInactive : ckbDCFromClinic.checked := true; //will trigger event
+    tpcStandard : rbStand.checked := true;
+    tpcComplex  : rbComplex.Checked := true;
+    tpcInactive : begin
+                    rbStand.checked := false;
+                    rbComplex.Checked := false;
+                  end;
   end;  //case
   ckbNoStop.Checked := (FPatient.StopDate = 'Indefinite');
   edtDur.Text := FPatient.ExpectedTreatmentDuration;
@@ -168,9 +170,8 @@ begin
   for AWeekDay := dayMon to dayFri do begin
     RestrictDayCheckboxArray[AWeekDay].Checked := FPatient.DrawRestrictionsArray[AWeekDay];
   end;
-  FLoadingData := false;
+  FPushingOutData := false;
 end;
-
 
 procedure TfrmPatientInformation.memPeopleChange(Sender: TObject);
 begin
@@ -204,6 +205,7 @@ end;
 
 procedure TfrmPatientInformation.rbComplexClick(Sender: TObject);
 begin
+  if FPushingOutData then exit;
   if rbComplex.Checked then begin
     FPatient.Complexity := tpcComplex;
   end;
@@ -211,9 +213,64 @@ end;
 
 procedure TfrmPatientInformation.rbStandClick(Sender: TObject);
 begin
+  if FPushingOutData then exit;
   if rbStand.Checked then begin
     FPatient.Complexity := tpcStandard;
   end;
+end;
+
+procedure TfrmPatientInformation.SetDischargeEnableStatus(Discharged : boolean);
+const BUTTON_TEXT : array[false..true] of string = ('&Discharge from Clinic','&Undo Discharge');
+begin
+  edtStop.enabled               := Discharged;
+  lblStop.Enabled               := Discharged;
+  edtDur.enabled                := not Discharged;
+  rbComplex.Enabled             := not Discharged; //will trigger event ?
+  rbStand.Enabled               := not Discharged; //will trigger event ?
+  rbStand.Checked               := not Discharged;
+  edtStop.Enabled               := Discharged;
+  edtStop.Color                 := IfThenColor(Discharged, clWindow, cl3dLight);
+  edtStop.text                  := IfThenStr(Discharged, DateToStr(FPatient.DischargedDate), '');
+  if Discharged then begin
+    ckbNoStop.checked := false;
+    rbComplex.Checked := false;
+    FPatient.Complexity := tpcInactive;
+  end else begin
+    FPatient.Complexity := IfThenCpx(rbComplex.Checked, tpcComplex, tpcStandard);
+  end;
+  btnDischargeFromClinic.Caption := BUTTON_TEXT[Discharged];
+end;
+
+
+procedure TfrmPatientInformation.btnDischargeFromClinicClick(Sender: TObject);
+var Discharged : boolean;
+    frmDischargeInfo: TfrmDischargeInfo;
+    TempAppState : TAppState;
+    TempFlowsheet : TOneFlowsheet;
+
+begin
+  if not FPatient.DischargedFromClinic then begin
+    frmDischargeInfo := TfrmDischargeInfo.Create(Self);
+    TempAppState := TAppState.Create;
+    TempFlowsheet := TOneFlowsheet.Create;
+    try
+      TempAppState.Assign(FAppState);
+      TempFlowsheet.Assign(FFlowsheet);
+      if frmDischargeInfo.ShowModal(TempAppState, FFlowsheet) = mrOK then begin
+        Discharged := true;
+        FAppState.Assign(TempAppState);
+        FFlowsheet.Assign(TempFlowsheet);
+      end;
+    finally
+      frmDischargeInfo.Free;
+      TempFlowsheet.Free;
+      TempAppState.Free;
+    end;
+  end else begin
+    Discharged := false;
+  end;
+  FPatient.DischargedFromClinic := Discharged;
+  SetDischargeEnableStatus(Discharged);
 end;
 
 procedure TfrmPatientInformation.btnEditBridgingCommentsClick(Sender: TObject);
@@ -269,63 +326,41 @@ procedure TfrmPatientInformation.ckbAMmedsClick(Sender: TObject);
 const
   AmPmLabel : array[false .. true] of tAMMeds = (tammPMMeds, tammAMMeds);
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FPatient.AM_Meds := AmPmLabel[ckbAMmeds.Checked];
 end;
 
 
 procedure TfrmPatientInformation.ckbBridgingClick(Sender: TObject);
 begin
-  if not FLoadingData then begin
+  if not FPushingOutData then begin
     FPatient.Needs_LMWH_Bridging := ckbBridging.Checked;
   end;
   btnEditBridgingComments.Visible := FPatient.Needs_LMWH_Bridging or (FPatient.BridgingCommentsSL.Count > 0);
   if FPatient.Needs_LMWH_Bridging then begin
-    if not FLoadingData then
+    if not FPushingOutData then
       btnEditBridgingCommentsClick(Sender);
   end else begin
     FPatient.BridgingCommentsSL.Clear;
   end;
 end;
 
-procedure TfrmPatientInformation.ckbDCFromClinicClick(Sender: TObject);
-var Discharged : boolean;
-begin
-  Discharged                    := ckbDCFromClinic.checked;
-  FPatient.DischargedFromClinic := Discharged;
-  edtStop.enabled               := Discharged;
-  lblStop.Enabled               := Discharged;
-  edtDur.enabled                := not Discharged;
-  rbComplex.Enabled             := not Discharged; //will trigger event
-  rbStand.Enabled               := not Discharged; //will trigger event
-  rbStand.Checked               := not Discharged;
-  edtStop.Color                 := IfThenColor(Discharged, clWindow, cl3dLight);
-  edtStop.text                  := IfThenStr(Discharged, DateToStr(Now), '');
-  if Discharged then begin
-    ckbNoStop.checked := false;
-    rbComplex.Checked := false;
-    FPatient.Complexity := tpcInactive;
-  end else begin
-    FPatient.Complexity := IfThenCpx(rbComplex.Checked, tpcComplex, tpcStandard);
-  end;
-end;
-
 procedure TfrmPatientInformation.ckbIncludeRisksInNoteClick(Sender: TObject);
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FAppState.IncludeRisksInNote := ckbIncludeRisksInNote.Checked;
 end;
 
 procedure TfrmPatientInformation.ckbMsgClick(Sender: TObject);
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FPatient.MsgPhone := MSG_PHONE_VAL[ckbMsg.Checked];
 end;
 
 procedure TfrmPatientInformation.ckbNoStopClick(Sender: TObject);
 const DATE_TEXT : array[false..true] of string = ('', 'Indefinite');
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FPatient.StopDate := DATE_TEXT[ckbNoStop.Checked];
   edtStop.Text := FPatient.StopDate;
 end;
@@ -335,7 +370,7 @@ const
   SELECTED_COLOR : array [false..true] of TColor = (clMenu, clWindow);
 
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   memPeople.Enabled := ckbPmsg.checked;
   lblAllowedPersons.Enabled := ckbPmsg.checked;
   memPeople.ReadOnly := not ckbPmsg.checked;;
@@ -354,7 +389,7 @@ end;
 procedure TfrmPatientInformation.ckbRestrictDayClick(Sender: TObject);
 var  AWeekDay : tDaysOfWeek;
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   for AWeekDay := dayMon to dayFri do begin
     FPatient.DrawRestrictionsArray[AWeekDay] := RestrictDayCheckboxArray[AWeekDay].Checked;
   end;
@@ -362,13 +397,13 @@ end;
 
 procedure TfrmPatientInformation.ckbSAClick(Sender: TObject);
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FPatient.SignedAgreement := ckbSA.Checked;
 end;
 
 procedure TfrmPatientInformation.edtDurChange(Sender: TObject);
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FPatient.ExpectedTreatmentDuration := edtDur.Text;
 end;
 
@@ -419,7 +454,7 @@ end;
 
 procedure TfrmPatientInformation.edtSDateChange(Sender: TObject);
 begin
-  if FLoadingData then exit;
+  if FPushingOutData then exit;
   FPatient.StartDate := edtSDate.Text;
 end;
 
@@ -463,9 +498,13 @@ begin
   FAppState.Free;
 end;
 
-function TfrmPatientInformation.ShowModal(AppState : TAppState) : integer;
+function TfrmPatientInformation.ShowModal(AppState : TAppState; AFlowsheet : TOneFlowsheet) : integer;
+// It might be that AFlowsheet is not the same as AppState.CurrentNewFlowsheet
 begin
-  Self.Initialize(AppState);
+  FAppState.Assign(AppState);
+  FPatient := FAppState.Patient;
+  FFlowsheet := AFlowsheet;
+  DataToGUI;
   Result := Self.ShowModal;
 end;
 

@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Dialogs, grids,
   StdCtrls, StrUtils, Math, DateUtils, ComCtrls, ExtCtrls, graphics,
-  ORCtrls, ORFn, ORNet, Trpcb, VA508AccessibilityManager, mPCE,
+  ORCtrls, ORFn, ORNet, Trpcb, {VA508AccessibilityManager,} mPCE,
   uHTMLTools, TMGHTML2;
 
 type

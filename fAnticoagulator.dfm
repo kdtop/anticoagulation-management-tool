@@ -3,11 +3,11 @@ object frmAnticoagulate: TfrmAnticoagulate
   Top = 240
   BorderStyle = bsSingle
   Caption = 'Anticoagulation Flow Sheet'
-  ClientHeight = 605
-  ClientWidth = 614
+  ClientHeight = 602
+  ClientWidth = 734
   Color = clCream
-  Constraints.MinHeight = 630
-  Constraints.MinWidth = 620
+  Constraints.MinHeight = 650
+  Constraints.MinWidth = 740
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -19,36 +19,35 @@ object frmAnticoagulate: TfrmAnticoagulate
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
-  OnShow = FormShow
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object pnlTop: TPanel
     Left = 0
     Top = 0
-    Width = 614
-    Height = 210
+    Width = 734
+    Height = 207
     Align = alTop
     Anchors = [akLeft, akTop, akRight, akBottom]
     ParentBackground = False
     TabOrder = 0
     DesignSize = (
-      614
-      210)
+      734
+      207)
     object lblIndication: TLabel
-      Left = 240
-      Top = 183
+      Left = 244
+      Top = 178
       Width = 86
       Height = 13
-      Anchors = [akLeft, akBottom]
+      Anchors = [akRight, akBottom]
       Caption = 'Primary Indication:'
-      ExplicitTop = 163
     end
     object lblINRGoal: TLabel
-      Left = 465
+      Left = 585
       Top = 183
       Width = 57
       Height = 13
-      Anchors = [akLeft, akBottom]
+      Anchors = [akRight, akBottom]
       Caption = 'INR Goal:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -56,6 +55,7 @@ object frmAnticoagulate: TfrmAnticoagulate
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 465
       ExplicitTop = 163
     end
     object lblSiteName: TLabel
@@ -72,10 +72,11 @@ object frmAnticoagulate: TfrmAnticoagulate
       ParentFont = False
     end
     object lblComplex: TLabel
-      Left = 444
+      Left = 564
       Top = 41
       Width = 131
       Height = 20
+      Anchors = [akTop, akRight]
       Caption = 'Complex Patient'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clRed
@@ -84,6 +85,7 @@ object frmAnticoagulate: TfrmAnticoagulate
       Font.Style = [fsBold]
       ParentFont = False
       Visible = False
+      ExplicitLeft = 444
     end
     object lblPname: TLabel
       AlignWithMargins = True
@@ -110,7 +112,6 @@ object frmAnticoagulate: TfrmAnticoagulate
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 0
-      Anchors = [akLeft, akBottom]
       Caption = 
         'Pt has not given permission to leave anticoag messages on answer' +
         'ing machine. '
@@ -125,17 +126,15 @@ object frmAnticoagulate: TfrmAnticoagulate
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 0
-      Anchors = [akLeft, akBottom]
       Caption = 'Pt does not have a signed agreement.'
       Constraints.MinHeight = 17
     end
     object lblTemp: TLabel
-      Left = 239
-      Top = 136
+      Left = 271
+      Top = 137
       Width = 116
       Height = 20
       Alignment = taCenter
-      Anchors = [akLeft, akBottom]
       Caption = 'Incomplete Entry'
       Constraints.MinHeight = 20
       Font.Charset = DEFAULT_CHARSET
@@ -145,14 +144,12 @@ object frmAnticoagulate: TfrmAnticoagulate
       Font.Style = [fsBold]
       ParentFont = False
       Visible = False
-      ExplicitTop = 116
     end
     object lblAutoPrimIndicCap: TLabel
-      Left = 10
-      Top = 159
+      Left = 9
+      Top = 156
       Width = 106
       Height = 13
-      Anchors = [akLeft, akBottom]
       Caption = 'Primary Indication:'
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
@@ -161,18 +158,15 @@ object frmAnticoagulate: TfrmAnticoagulate
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitTop = 139
     end
     object lblAutoPrimIndic: TLabel
-      Left = 121
-      Top = 159
+      Left = 120
+      Top = 156
       Width = 245
       Height = 13
-      Anchors = [akLeft, akBottom]
       Caption = 'Encounter for Therapeutic Drug Monitoring (V58.83)'
       Constraints.MaxWidth = 295
       Enabled = False
-      ExplicitTop = 139
     end
     object lblPtInfo: TLabel
       Left = 9
@@ -182,14 +176,14 @@ object frmAnticoagulate: TfrmAnticoagulate
       Caption = 'lblPtInfo'
     end
     object cbxINRGoal: TComboBox
-      Left = 525
+      Left = 645
       Top = 178
       Width = 73
       Height = 21
       Hint = 'Choose the INR range you'#39'd like the patient to achieve'
       AutoDropDown = True
       AutoCloseUp = True
-      Anchors = [akLeft, akBottom]
+      Anchors = [akRight, akBottom]
       TabOrder = 0
       OnClick = cbxINRGoalClick
       OnExit = cbxINRGoalExit
@@ -202,9 +196,9 @@ object frmAnticoagulate: TfrmAnticoagulate
     object gbxContactInfo: TGroupBox
       Left = 406
       Top = 73
-      Width = 193
+      Width = 313
       Height = 102
-      Anchors = [akLeft, akBottom]
+      Anchors = [akLeft, akTop, akRight, akBottom]
       Caption = 'Official Contact Information'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -305,7 +299,7 @@ object frmAnticoagulate: TfrmAnticoagulate
     end
     object pnlINR: TPanel
       Left = 9
-      Top = 178
+      Top = 175
       Width = 225
       Height = 24
       Anchors = [akLeft, akBottom]
@@ -370,7 +364,6 @@ object frmAnticoagulate: TfrmAnticoagulate
       Height = 40
       VertScrollBar.Smooth = True
       VertScrollBar.Style = ssHotTrack
-      Anchors = [akLeft, akBottom]
       BevelInner = bvNone
       BevelOuter = bvNone
       BorderStyle = bsNone
@@ -382,14 +375,13 @@ object frmAnticoagulate: TfrmAnticoagulate
       object lblPMsg: TStaticText
         Left = 0
         Top = 0
-        Width = 390
-        Height = 40
+        Width = 172
+        Height = 17
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
         Align = alClient
-        Anchors = [akLeft, akBottom]
         Caption = 'OK to leave message with _______'
         Constraints.MaxHeight = 340
         Constraints.MaxWidth = 468
@@ -400,12 +392,12 @@ object frmAnticoagulate: TfrmAnticoagulate
       end
     end
     object cboIndication: TComboBox
-      Left = 332
+      Left = 336
       Top = 178
-      Width = 127
+      Width = 243
       Height = 21
       Hint = 'Choose the indication for treatment'
-      Anchors = [akLeft, akBottom]
+      Anchors = [akRight, akBottom]
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
@@ -425,10 +417,11 @@ object frmAnticoagulate: TfrmAnticoagulate
       OnExit = cboSiteExit
     end
     object pnlHighlightEditPref: TPanel
-      Left = 395
+      Left = 512
       Top = 5
       Width = 210
       Height = 35
+      Anchors = [akTop, akRight]
       BevelOuter = bvNone
       ParentBackground = False
       TabOrder = 6
@@ -440,9 +433,9 @@ object frmAnticoagulate: TfrmAnticoagulate
         Top = 3
         Width = 204
         Height = 30
-        Hint = 'Click To Edit Patient Preferences'
-        Anchors = [akLeft, akBottom]
-        Caption = 'View / Edit Patient Preferences'
+        Hint = 'Click To Edit Patient Information'
+        Anchors = [akTop, akRight]
+        Caption = 'View / Edit Patient Information'
         Glyph.Data = {
           F6060000424DF606000000000000360000002800000018000000180000000100
           180000000000C0060000130B0000130B00000000000000000000FF00FFFF00FF
@@ -510,10 +503,10 @@ object frmAnticoagulate: TfrmAnticoagulate
   end
   object pcMain: TPageControl
     Left = 0
-    Top = 211
-    Width = 614
+    Top = 208
+    Width = 734
     Height = 394
-    ActivePage = tsEnterInfo
+    ActivePage = tsExit
     Align = alBottom
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -532,15 +525,22 @@ object frmAnticoagulate: TfrmAnticoagulate
       HelpKeyword = 'Overview'
       HelpContext = 1000
       Caption = 'Overview'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnlTabDemographics: TPanel
         Left = 0
         Top = 0
-        Width = 606
+        Width = 726
         Height = 368
         Align = alClient
         Color = clCream
         ParentBackground = False
         TabOrder = 0
+        DesignSize = (
+          726
+          368)
         object gbxPctInGoal: TGroupBox
           Left = 8
           Top = 303
@@ -601,11 +601,12 @@ object frmAnticoagulate: TfrmAnticoagulate
           end
         end
         object btnDemoNext: TBitBtn
-          Left = 433
+          Left = 553
           Top = 334
           Width = 160
           Height = 30
           Hint = 'Click to continue'
+          Anchors = [akRight, akBottom]
           Caption = '&Next  '
           Glyph.Data = {
             F6060000424DF606000000000000360000002800000018000000180000000100
@@ -673,7 +674,7 @@ object frmAnticoagulate: TfrmAnticoagulate
         object chrtINR: TChart
           Left = 5
           Top = 6
-          Width = 588
+          Width = 708
           Height = 286
           BackWall.Brush.Style = bsClear
           Gradient.Direction = gdBottomTop
@@ -713,6 +714,7 @@ object frmAnticoagulate: TfrmAnticoagulate
           Color = clMoneyGreen
           OnEnter = chrtINREnter
           TabOrder = 2
+          Anchors = [akLeft, akTop, akRight, akBottom]
           OnMouseWheel = chrtINRMouseWheel
           DefaultCanvas = 'TGDIPlusCanvas'
           ColorPaletteIndex = 4
@@ -952,17 +954,21 @@ object frmAnticoagulate: TfrmAnticoagulate
       HelpContext = 1300
       Caption = 'Enter Information'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnlTabEnter: TPanel
         Left = 0
         Top = 0
-        Width = 606
+        Width = 726
         Height = 368
         Align = alClient
         Color = clCream
         ParentBackground = False
         TabOrder = 0
         DesignSize = (
-          606
+          726
           368)
         object lblFSVDt: TLabel
           Left = 12
@@ -1066,11 +1072,20 @@ object frmAnticoagulate: TfrmAnticoagulate
           ParentFont = False
           Visible = False
         end
+        object lblMissedApptDate: TLabel
+          Left = 181
+          Top = 299
+          Width = 124
+          Height = 13
+          Caption = 'Missed Appointment Date:'
+          Visible = False
+        end
         object gbxDailyDosing: TGroupBox
           Left = 2
           Top = 91
-          Width = 584
+          Width = 704
           Height = 166
+          Anchors = [akLeft, akTop, akRight]
           Caption = 'Current Daily Dosing'
           Color = cl3DLight
           Font.Charset = ANSI_CHARSET
@@ -1084,7 +1099,7 @@ object frmAnticoagulate: TfrmAnticoagulate
           ShowHint = False
           TabOrder = 0
           DesignSize = (
-            584
+            704
             166)
           object lblSun: TLabel
             Left = 150
@@ -2256,13 +2271,93 @@ object frmAnticoagulate: TfrmAnticoagulate
             TabOrder = 23
             OnClick = btnSwapClick
           end
+          object gbxInstructions: TGroupBox
+            Left = 504
+            Top = 10
+            Width = 185
+            Height = 97
+            Anchors = [akTop, akRight]
+            Caption = 'Extra Instructions'
+            TabOrder = 24
+            object lblHoldDays: TLabel
+              Left = 129
+              Top = 17
+              Width = 24
+              Height = 11
+              Caption = 'days'
+              Enabled = False
+            end
+            object lblExtraMgsToday: TLabel
+              Left = 87
+              Top = 43
+              Width = 47
+              Height = 11
+              Caption = 'mg today'
+              Enabled = False
+            end
+            object ckbHold: TCheckBox
+              Left = 3
+              Top = 18
+              Width = 85
+              Height = 17
+              Caption = '&Hold dose for'
+              TabOrder = 0
+              OnClick = ckbHoldClick
+            end
+            object edtNumHoldDays: TEdit
+              Left = 94
+              Top = 16
+              Width = 29
+              Height = 19
+              Hint = 'Number of days'
+              Enabled = False
+              MaxLength = 1
+              ParentShowHint = False
+              ShowHint = True
+              TabOrder = 1
+              OnChange = edtNumHoldDaysChange
+            end
+            object ckbTake: TCheckBox
+              Left = 3
+              Top = 41
+              Width = 45
+              Height = 17
+              Caption = '&Take'
+              TabOrder = 2
+              OnClick = ckbTakeClick
+            end
+            object edtTakeNumMgToday: TEdit
+              Left = 52
+              Top = 41
+              Width = 29
+              Height = 19
+              Hint = 'Number of days'
+              MaxLength = 3
+              ParentShowHint = False
+              ShowHint = True
+              TabOrder = 3
+              OnChange = edtTakeNumMgTodayChange
+            end
+            object memPatientInstructions: TMemo
+              Left = 5
+              Top = 66
+              Width = 175
+              Height = 26
+              TabOrder = 4
+              WordWrap = False
+              OnChange = memPatientInstructionsChange
+              OnClick = memPatientInstructionsClick
+              OnEnter = memPatientInstructionsEnter
+            end
+          end
         end
         object edtPtNote: TEdit
           Left = 283
           Top = 9
-          Width = 303
+          Width = 423
           Height = 21
           Hint = 'Enter text of Patient Notice'
+          Anchors = [akLeft, akTop, akRight]
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -2278,8 +2373,9 @@ object frmAnticoagulate: TfrmAnticoagulate
         object memComments: TMemo
           Left = 283
           Top = 33
-          Width = 304
+          Width = 424
           Height = 50
+          Anchors = [akLeft, akTop, akRight]
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -2291,7 +2387,7 @@ object frmAnticoagulate: TfrmAnticoagulate
           OnExit = memCommentsExit
         end
         object btnEditDoseNext: TBitBtn
-          Left = 433
+          Left = 553
           Top = 334
           Width = 160
           Height = 30
@@ -2362,8 +2458,8 @@ object frmAnticoagulate: TfrmAnticoagulate
           OnClick = btnEditDoseNextClick
         end
         object btnCancelDose: TBitBtn
-          Left = 175
-          Top = 298
+          Left = 298
+          Top = 334
           Width = 161
           Height = 30
           Hint = 'Click to cancel changes to daily dosing pattern'
@@ -2456,7 +2552,7 @@ object frmAnticoagulate: TfrmAnticoagulate
           Top = 334
           Width = 161
           Height = 30
-          Anchors = [akRight, akBottom]
+          Anchors = [akLeft, akBottom]
           Caption = 'Enter/Edit &Complications'
           Glyph.Data = {
             F6060000424DF606000000000000360000002800000018000000180000000100
@@ -2519,9 +2615,9 @@ object frmAnticoagulate: TfrmAnticoagulate
           OnClick = btnComplicationsClick
         end
         object btnNewINR: TBitBtn
-          Left = 267
-          Top = 334
-          Width = 160
+          Left = 387
+          Top = 298
+          Width = 161
           Height = 30
           Anchors = [akRight, akBottom]
           Caption = '&New INR'
@@ -2586,8 +2682,8 @@ object frmAnticoagulate: TfrmAnticoagulate
           OnClick = btnNewINRClick
         end
         object btnEditDailyDose: TBitBtn
-          Left = 266
-          Top = 298
+          Left = 386
+          Top = 334
           Width = 161
           Height = 30
           Hint = 'Click to change daily dosing pattern'
@@ -2741,6 +2837,17 @@ object frmAnticoagulate: TfrmAnticoagulate
           TabOrder = 8
           OnClick = btnMissedApptClick
         end
+        object dtpMissedAppt: TDateTimePicker
+          Left = 191
+          Top = 318
+          Width = 101
+          Height = 21
+          Date = 37820.584724004600000000
+          Time = 37820.584724004600000000
+          TabOrder = 9
+          Visible = False
+          OnChange = dtpMissedApptChange
+        end
       end
     end
     object tsExit: TTabSheet
@@ -2749,6 +2856,10 @@ object frmAnticoagulate: TfrmAnticoagulate
       Caption = 'Exit'
       ImageIndex = 3
       OnShow = tsExitShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnlNoDraw: TPanel
         Left = 384
         Top = 2
@@ -2773,22 +2884,25 @@ object frmAnticoagulate: TfrmAnticoagulate
       object pnlTabExit: TPanel
         Left = 0
         Top = 0
-        Width = 606
+        Width = 726
         Height = 368
         Align = alClient
         Color = clCream
         ParentBackground = False
         TabOrder = 1
+        DesignSize = (
+          726
+          368)
         object lblDrawRestr: TLabel
-          Left = 321
-          Top = 16
+          Left = 316
+          Top = 32
           Width = 84
           Height = 13
           Caption = 'Do NOT draw on:'
         end
         object gbxReturnForINR: TGroupBox
-          Left = 16
-          Top = 8
+          Left = 11
+          Top = 24
           Width = 287
           Height = 64
           Caption = 'Return for INR Draw'
@@ -2875,8 +2989,8 @@ object frmAnticoagulate: TfrmAnticoagulate
           end
         end
         object gbxLabs: TGroupBox
-          Left = 16
-          Top = 86
+          Left = 11
+          Top = 102
           Width = 185
           Height = 134
           Caption = 'Labs'
@@ -2910,8 +3024,8 @@ object frmAnticoagulate: TfrmAnticoagulate
           end
         end
         object gbxPCE: TGroupBox
-          Left = 207
-          Top = 86
+          Left = 202
+          Top = 102
           Width = 341
           Height = 134
           Caption = 'PCE Data'
@@ -3064,11 +3178,12 @@ object frmAnticoagulate: TfrmAnticoagulate
           OnClick = btnTempSaveClick
         end
         object btnCompleteVisit: TBitBtn
-          Left = 433
+          Left = 553
           Top = 333
           Width = 160
           Height = 30
           Hint = 'Click to complete the current visit'
+          Anchors = [akRight, akBottom]
           Caption = '  &Complete Visit and Exit'
           Glyph.Data = {
             F6060000424DF606000000000000360000002800000018000000180000000100
@@ -3168,94 +3283,6 @@ object frmAnticoagulate: TfrmAnticoagulate
           TabOrder = 5
           OnClick = btnRemindClick
         end
-        object btnDocumentation: TBitBtn
-          Left = 433
-          Top = 294
-          Width = 160
-          Height = 33
-          Hint = 'Click to generate documentation notes for visit'
-          Caption = '&Document Visit'
-          Glyph.Data = {
-            42090000424D4209000000000000420000002800000018000000180000000100
-            20000300000000090000130B0000130B00000000000000000000000000FF0000
-            FF0000FF0000FFFF00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF000000FF00
-            0000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF00
-            0000FF000000FF000000FF000000FF000000FF000000FFFF00FFFFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF413F3EFF8C8A87FF90
-            8E8CFF908E8CFF908E8CFF908E8CFF908E8CFF908E8CFF908E8CFF908E8CFF90
-            8E8CFF908E8CFF908E8CFF908E8CFF8C8A87FF413F3EFF000000FFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF3A3938FFE8E4E1FFF8F6F6FFF9
-            F8F8FFF9F8F8FFF9F8F8FFF9F8F8FFF9F8F8FFF9F8F8FFF9F8F8FFF9F8F8FFF9
-            F8F8FFF9F8F8FFF9F8F8FFF9F8F8FFF8F6F6FFE8E4E1FF3A3938FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF7C7B79FFF8F7F6FFFFFFFFFFFD
-            FDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F7F6FF7C7B79FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF817F7EFFFAFAF9FFFEFEFEFFD1
-            D1D1FFD4D4D4FFD2D2D2FFD6D6D6FFCFCFCEFFCECECEFFFDFDFDFFFEFEFEFFFE
-            FEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFEFEFEFFFAFAF9FF817F7EFF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF82807FFFFAFAF9FFFEFEFEFFD5
-            D5D5FFD2D2D2FFD2D2D2FFD0D0D0FFD8D8D8FFD0D0D0FFD6D6D6FFD7D7D7FFD9
-            D9D9FFD0D0D0FFCDCDCDFFF9F9F9FFFEFEFEFFFAFAF9FF82807FFF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF838180FFFAF9F8FFFEFDFDFFCC
-            CCCCFFD0D0CFFFCACACAFFD6D5D5FFCDCDCDFFD6D6D6FFD2D1D1FFD8D8D8FFCA
-            CACAFFD1D0D0FFE8E8E8FFFEFDFDFFFEFDFDFFFAF9F8FF838180FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF848281FFFAF9F8FFFDFCFCFFD4
-            D4D4FFD6D6D6FFCDCDCDFFCECECEFFD8D7D7FF0000FFFF0000FFFFFDFCFCFFFD
-            FCFCFFFDFCFCFFFDFCFCFFFDFCFCFFFDFCFCFFFAF9F8FF848281FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF848382FFF9F8F8FFFCFCFBFFD8
-            D7D7FFC9C9C8FFD5D5D4FFD4D4D4FFCACACAFF0000FFFF0000FFFFCAC9C8FFD2
-            D2D2FFCECECDFFD5D4D4FFCACACAFFFCFCFBFFF9F8F8FF848382FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF858483FFF8F8F7FFFAFAFAFFD0
-            D0D0FFCACAC9FFD3D2D2FFCECECDFFD8D7D6FF0000FFFF0000FFFFD2D1D1FFCF
-            CFCEFFCACAC9FFD3D2D2FFCCCCCBFFF3F2F2FFF8F8F7FF858483FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF868584FFF8F7F6FFFAF8F8FFD2
-            D2D1FFC4C4C4FF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
-            00FFFF0000FFFFEBEAE9FFFAF8F8FFFAF8F8FFF8F7F6FF868584FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF878685FFF7F6F5FFF8F8F6FFCE
-            CECDFFCECECDFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
-            00FFFF0000FFFFCCCBCAFFF8F6F6FFF8F8F6FFF6F5F4FF868483FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF888786FFF6F5F4FFF6F6F4FFD2
-            D1D0FFC5C4C4FFD6D5D4FFC7C6C6FFD2D1D0FF0000FFFF0000FFFFC9C8C7FFCF
-            CECDFFCDCCCCFFD3D2D2FFDDDCDBFFF6F4F4FFF2F1EFFF848281FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF898887FFF5F3F2FFF5F4F2FFC9
-            C8C7FFD0CECDFFD1D0CEFFC8C7C6FFCECDCCFF0000FFFF0000FFFFCFCECCFFCA
-            C9C8FFC7C6C5FFD0CECEFFC8C6C5FFF2F0EEFFECEAE7FF807E7BFF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF898988FFF4F2F0FFF4F2F0FFCA
-            C9C8FFCDCCCAFFC2C0BFFFC9C8C6FFC7C6C4FF0000FFFF0000FFFFC2C1C0FFCE
-            CDCCFFC8C7C5FFC2C1C0FFDEDCDAFFEAE8E5FFE1DCD7FF77736FFF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF8A8A89FFF2F1EFFFF2F0EEFFCA
-            C9C7FFC4C2C1FFC1C0BEFFCAC8C6FFBEBCBBFFC1C0BEFFC6C4C3FFD0CFCEFFCC
-            CBC9FFCECCCBFFCAC8C6FFC4C1BEFFDFDAD5FFCDC5BCFF68625BFF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF8B8A8AFFF1EFEDFFF0EDEBFFCB
-            C9C8FFCCC9C8FFC1BFBDFFCAC8C6FFC8C6C4FFC4C2C0FFC7C5C3FFEFEDEBFFEE
-            ECEAFFE5E1DDFFDED8D2FFDAD4CEFFCFC6BEFFBCB1A6FF59514AFF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF8C8B8BFFEFEDEBFFECEAE8FFC2
-            C0BEFFCAC8C6FFC6C4C3FFC0BEBCFFCBCAC8FFC2C1BFFFCBC9C7FFD3D1CEFFE1
-            DCD8FFE6E2DEFFEEECEAFFECEAE7FFEFEDEAFFC4C4C3FF121111FF000000FFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF8C8C8CFFEEEBE9FFEAE8E5FF5C
-            5B5AFF959392FFA09E9CFF92908FFF858382FF8A8886FF8A8987FFA09E9CFFDC
-            D6CFFFEDEBE8FFE2DEDAFFE5E2DEFFC4C3C3FF131313FF000000FFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF8D8D8DFFECE9E6FFE8E5E2FFE8
-            E5E2FFE8E5E2FFE8E5E2FFE8E5E2FFE8E5E2FFE7E4E1FFE5E1DEFFE0DCD7FFDA
-            D3CCFFEAE7E4FFE5E2DEFFC4C4C4FF131313FF000000FFFF00FFFFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF8A8A8AFFECE9E6FFE6E2DEFFE6
-            E2DEFFE6E2DEFFE6E2DEFFE6E2DEFFE4E1DEFFE2DEDAFFDDD9D4FFD4CDC7FFCF
-            C7BFFFEDEBE8FFC1C0C0FF131313FF010101FFFF00FFFFFF00FFFFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF414141FFF8F7F6FFEAE7E5FFE8
-            E5E2FFE8E5E2FFE8E5E2FFE8E4E2FFE5E2DEFFE0DCD7FFD6D0CAFFC4BBB1FFC3
-            B9AFFFC4C4C4FF111111FF010101FFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF484848FF9E9E9EFFA3
-            A3A3FFA3A3A3FFA2A2A2FFA1A1A0FF9E9D9CFF989694FF8D8984FF7A726BFF6C
-            645DFF111111FF010101FFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF
-            00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF000000FF000000FF00
-            0000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF00
-            0000FF000000FFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF
-            00FFFFFF00FF}
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 6
-          OnClick = btnDocumentationClick
-        end
       end
     end
     object tsSTAT: TTabSheet
@@ -3263,10 +3290,14 @@ object frmAnticoagulate: TfrmAnticoagulate
       HelpContext = 1500
       Caption = 'Utilities'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnlTabUtilities: TPanel
         Left = 0
         Top = 0
-        Width = 606
+        Width = 726
         Height = 368
         Align = alClient
         Color = clCream

@@ -13,17 +13,17 @@ uses
 //FORWARD DECLARATIONS
 //--------------------
   //kt function MakeNote(DFN, Title, Clinic, VisitDate, SvcCat : string; Lines : TStrings) : string;
-  function  MakeNote(AppState : TAppState; Lines : TStrings) : string;
+  function  MakeNote(AppState : TAppState; TitleIEN : String; Lines : TStrings) : string;
   function  CompleteConsultRPC(ConsultNumber, NoteNumber, DUZ : string) : string;
   function  ValidESCode(const ACode: string): Boolean;
   procedure GetConsultList(DFN, ConsultService : string; OutSL : TStrings);
-  procedure SignRecord(NoteNumber, EncSig : string);
+  function SignRecord(NoteNumber, EncSig : string) : boolean;
   function  SignNote(NoteNumber, Clinic, UnencryptedSig : string) : boolean;
   function  GetPatientInfo(DFN : string; var Patient : TPatient) : boolean;
   procedure GetPercentInGoal(var Patient :TPatient; PctInGoalMode: tPctInGoalMode);
   function  PatientCheck(DFN : string) : tPtCheck;
   procedure AddNewPatient(DFN : string);
-  function  GetParametersByRPC(DUZ, ClinicIEN: string; Parameters: TParameters) : boolean;
+  function  GetParametersByRPC(DUZ, ClinicLoc: string; Parameters: TParameters) : boolean;
   function  FillIndicationsFromRPC(Parameters : TParameters; cbo : TComboBox) : boolean;
   procedure GetProviderInfo(var Provider : TProvider);
   function  GetClinicsList(cbo : TComboBox; Patient : TPatient) : boolean;
@@ -37,7 +37,7 @@ uses
   procedure GetTemplateText(TemplateIEN, DFN, VSTR: string; SL : TStringList);
   function  GetDefaultCosignerForCurrentUser : string;
   procedure GetEligibleCosignersList(FromName : string; OutSL : TStrings);
-  function  UpdateTIUSignerAndCoSigner(TIUIEN, ProviderDUZ, CosignerDUZ : string) : string;
+  function  AddTIUCosigner(TIUIEN, CosignerDUZ : string) : string;
   function  DeleteTIUNote(TIUIEN : string) : string;
   function  OrderIt(AppState : TAppState; code: string): string;
   procedure RPCGetFlowsheetRawData(DFN : string; OutSL : TStringList);
@@ -56,8 +56,10 @@ implementation
 uses
   uUtility, fPCE;
 
+  {
 //function MakeNote(DFN, Title, Clinic, VisitDate, SvcCat : string; Lines : TStrings) : string;
-function MakeNote(AppState : TAppState; Lines : TStrings) : string;
+function MakeNote(AppState : TAppState; TitleIEN : String; Lines : TStrings) : string;
+//Result is IEN of note
 var i : integer;
 begin
   with RPCBrokerV do begin
@@ -66,13 +68,13 @@ begin
     Param[0].PType := literal;
     Param[0].Value := AppState.Patient.DFN;
     Param[1].PType := literal;
-    Param[1].Value := AppState.FTitle;
+    Param[1].Value := TitleIEN;
     Param[2].PType := literal;
-    Param[2].Value := '';
+    Param[2].Value := '';    //[VDT]   = Date(/Time) of Visit
     Param[3].PType := literal;
-    Param[3].Value := '';
+    Param[3].Value := '';    //[VLOC]  = Visit Location (HOSPITAL LOCATION)
     Param[4].PType := literal;
-    Param[4].Value := '';
+    Param[4].Value := '';    //[VSIT]  = Visit file ien (#9000010)
     Param[5].PType := list;
     for i := 0 to Lines.Count - 1 do begin
       Param[5].Mult['"TEXT",' + IntToStr(i+1) + ',0'] := FilteredString(Lines[i]);
@@ -81,6 +83,127 @@ begin
     Param[6].Value := AppState.EClinic + ';' + AppState.Patient.VisitDate + ';' + AppState.SvcCat;
   end;
   Result := RPCBrokerV.strCall;
+end;         }
+
+procedure InitParams( NoteIEN: Int64; Suppress: Integer );
+//This is split out from SetText because it has to be called more than once.
+begin
+  with RPCBrokerV do
+  begin
+    ClearParameters := True;
+    RemoteProcedure := 'TIU SET DOCUMENT TEXT';
+    Param[0].PType := literal;
+    Param[0].Value := IntToStr(NoteIEN);
+    Param[1].PType := list;
+    Param[2].PType := literal;
+    Param[2].Value := IntToStr(Suppress);
+  end;
+end;
+
+procedure SetText(var ErrMsg: string; NoteText: TStrings; NoteIEN: Int64; Suppress: Integer);
+//kt documentation.  If Suppress=1, then save is put into TEMP node on server, instead of TEXT node.
+const
+  DOCUMENT_PAGE_SIZE = 300;
+  TX_SERVER_ERROR = 'An error occurred on the server.' ;
+var
+  i, j, page, pages: Integer;
+begin
+  // Compute pages, initialize Params
+  pages := ( NoteText.Count div DOCUMENT_PAGE_SIZE );
+  if (NoteText.Count mod DOCUMENT_PAGE_SIZE) > 0 then pages := pages + 1;
+  page := 1;
+
+  InitParams( NoteIEN, Suppress );  //This is called again below if page > 1
+  for i := 0 to NoteText.Count - 1 do begin   // Loop through NoteRec.Lines
+    j := i + 1;   //Add each successive line to Param[1].Mult...
+    RPCBrokerV.Param[1].Mult['"TEXT",' + IntToStr(j) + ',0'] := FilteredString(NoteText[i]);
+    // When current page is filled, call broker, increment page, itialize params, and continue...
+    if (j mod DOCUMENT_PAGE_SIZE) = 0 then begin
+      RPCBrokerV.Param[1].Mult['"HDR"'] := IntToStr(page) + U + IntToStr(pages);
+      CallBroker;
+      if RPCBrokerV.Results.Count > 0 then begin
+        ErrMsg := Piece(RPCBrokerV.Results[0], U, 4)
+      end else begin
+        ErrMsg := TX_SERVER_ERROR;
+      end;
+      if ErrMsg <> '' then Exit;
+      page := page + 1;
+      InitParams( NoteIEN, Suppress );
+    end; // if
+  end; // for
+  // finally, file any remaining partial page
+  if ( NoteText.Count mod DOCUMENT_PAGE_SIZE ) <> 0 then begin
+    RPCBrokerV.Param[1].Mult['"HDR"'] := IntToStr(page) + U + IntToStr(pages);
+    CallBroker;
+    if RPCBrokerV.Results.Count > 0 then begin
+      ErrMsg := Piece(RPCBrokerV.Results[0], U, 4)
+    end else begin
+      ErrMsg := TX_SERVER_ERROR;
+    end;
+  end;
+end;
+
+function MakeNote(AppState : TAppState; TitleIEN : String; Lines : TStrings) : string;
+var
+  ErrMsg: string;
+  NewNoteIEN : int64;
+begin
+  //kt AppState.EClinic := '17';   //elh this is temp but value should probably already be filled
+  with RPCBrokerV do begin
+    ClearParameters := True;
+    RemoteProcedure := 'TIU CREATE RECORD';
+    Param[0].PType := literal;
+    Param[0].Value := AppState.Patient.DFN;  //*DFN*
+    Param[1].PType := literal;
+    Param[1].Value := TitleIEN;
+    Param[2].PType := literal;
+    Param[2].Value := AppState.Patient.VisitDate; //FloatToStr(Encounter.DateTime);
+    Param[3].PType := literal;
+    Param[3].Value := AppState.EClinic; //IntToStr(Encounter.Location);
+    Param[4].PType := literal;
+    Param[4].Value := '';
+    Param[5].PType := list;
+    with Param[5] do begin
+      Mult['1202'] := AppState.Provider.DUZ;  //IntToStr(NoteRec.Author);
+      Mult['1301'] := AppState.Patient.VisitDate;
+      Mult['1205'] := AppState.EClinic;
+    end;
+    Param[6].PType := literal;
+    Param[6].Value := AppState.EClinic + ';' + AppState.Patient.VisitDate + ';' + AppState.SvcCat;
+    Param[7].PType := literal;
+    Param[7].Value := '1';  // suppress commit logic
+    CallBroker;
+    NewNoteIEN := StrToIntDef(Piece(Results[0], U, 1), 0);
+  end;
+  if NewNoteIEN <> 0 then begin
+    SetText(ErrMsg, Lines, NewNoteIEN, 1);
+    if ErrMsg <> '' then begin
+      NewNoteIEN := 0;
+    end;
+  end;
+  result := inttostr(NewNoteIEN);
+end;
+
+
+function AddTIUCosigner(TIUIEN, CosignerDUZ : string) : string;
+begin
+  with RPCBrokerV do begin
+    ClearParameters := True;
+    RemoteProcedure := 'TIU UPDATE ADDITIONAL SIGNERS';
+    Param[0].PType := literal;
+    Param[0].Value := TIUIEN;
+    Param[1].PType := list;
+    with Param[1] do begin
+      Mult['(1)'] := CosignerDUZ;
+    end;
+  end;
+  Result := RPCBrokerV.strCall;
+end;
+
+function DeleteTIUNote(TIUIEN : string) : string;
+begin
+  if TIUIEN='' then exit;
+  result := sCallV('TIU DELETE RECORD', [TIUIEN]);
 end;
 
 function CompleteConsultRPC(ConsultNumber, NoteNumber, DUZ : string) : string;
@@ -148,9 +271,12 @@ begin
 end;
 
 
-procedure SignRecord(NoteNumber, EncSig: string);
+function SignRecord(NoteNumber, EncSig: string) : boolean;
+//Result : true if OK, false if problem.
+var Temp : string;
 begin
-  CallV('TIU SIGN RECORD',[NoteNumber,EncSig]);
+  Temp := sCallV('TIU SIGN RECORD',[NoteNumber,EncSig]);
+  Result := (StrToIntDef(Temp,-1) = 0);
 end;
 
 procedure GetPercentInGoal(var Patient :TPatient; PctInGoalMode: tPctInGoalMode);
@@ -371,16 +497,68 @@ begin
 end;
 
 
-function GetParametersByRPC(DUZ, ClinicIEN: string; Parameters: TParameters) : boolean;
+function GetParametersByRPC(DUZ, ClinicLoc: string; Parameters: TParameters) : boolean;
 //Result: true if OK, or false if problem.
+//Input: ClinicLoc  e.g. '17;SC('
 var   ClinicParams: TStrings;
       s0,s1,s2 : string;
       ResultStr : string;
+      temp      : string;
 begin
   Result := false; //default to failure
   Parameters.Clear;
 
-  CallV('ORAMSET GET',[ClinicIEN]);
+  CallV('ORAMSET GET',[ClinicLoc]);
+  {  //BELOW IS LISTING OF THE PXRM PARAMETER NAMES USED TO RETURN EACH DATA POINT.
+
+	S0    piece  1      from param "ORAM CLINIC NAME"
+        piece  2      from param "ORAM TEAM LIST (ALL)"
+        piece  3      from param "ORAM TEAM LIST (COMPLEX)"
+        piece  4      from param "ORAM INITIAL NOTE"
+        piece  5      from param "ORAM INTERIM NOTE"
+        piece  6      from param "ORAM DISCHARGE NOTE"  (NOTE: see #15 for missed appt note)
+        piece  7      from param "ORAM CPT FOR SIMPLE PHONE"
+        piece  8      from param "ORAM CPT FOR SUBSEQUENT VISIT"
+        piece  9      from param "ORAM CPT FOR COMPLEX PHONE"
+        piece 10      from param "ORAM CPT FOR ORIENTATION"
+        piece 11      from param "ORAM CPT FOR INITIAL VISIT"
+        piece 12      from param "ORAM CONSULT LINK ENABLED"
+        piece 13      from param "ORAM PCE LINK ENABLED"
+        piece 14      from param "ORAM CPT FOR LETTER TO PT"
+        piece 15      from param "ORAM MISSED APPT NOTE"  //kt mod.  Was unused before.
+        piece 16      from param "ORAM ADDRESS LINE 1"
+        piece 17      from param "ORAM ADDRESS LINE 2"
+        piece 18      from param "ORAM ADDRESS LINE 3"
+
+	S1    piece  1      from param "ORAM SIGNATURE BLOCK NAME"
+        piece  2      from param "ORAM SIGNATURE BLOCK TITLE"
+        piece  3      from param "ORAM POINT OF CONTACT NAME"
+        piece  4      from param "ORAM CLINIC PHONE NUMBER" | "ORAM CLINIC FAX NUMBER"
+        piece  5      from param "ORAM MEDICAL CENTER NAME"
+        piece  6      from param "ORAM DEFAULT PILL STRENGTH"
+        piece  7      from param "ORAM INCL TIME W/NEXT INR DATE"
+        piece  8      from param "ORAM TOLL FREE PHONE"
+
+	S2    piece  1
+          subpiece 1  from param "ORAM VISIT LOCATION"
+          subpiece 2  from param "ORAM PHONE CLINIC"
+          subpiece 3  from param "ORAM NON-COUNT LOCATION"
+        piece  2
+          subpiece 1  from param "ORAM INR QUICK ORDER"
+          subpiece 2  from param "ORAM CBC QUICK ORDER"
+        piece  3      (USER'S INSTITUTION)
+        piece  4      from param "ORAM DSS UNIT"
+        piece  5      from param "ORAM DSS ID"
+        piece  6      from param "ORAM CONSULT REQUEST SERVICE"
+        piece  7
+          subpiece  1 from param "ORAM HCT/HGB REFERENCE"  <-- piece 1 of this
+          subpiece  2 from param "ORAM HCT/HGB REFERENCE"  <-- piece 1 of this
+        piece  8      from param "ORAM RAV FILE PATH"
+        piece  9      from param "ORAM AUTO PRIMARY INDICATION"   <-- icd code
+        piece 10      (ICD description) <-- from piece 9
+  }
+
+
   if RPCBrokerV.Results[0] = '0' then begin
     InfoBox('Anticoagulation Management Parameters must be set prior to using this program.',
             'Configuration Required', MB_OK or MB_ICONSTOP);
@@ -409,13 +587,14 @@ begin
     SiteAddC                            := Piece(s0, '^', 18);
     ClinicName                          := Piece(s1, '^', 3);
     ClinicPhone                         := Piece(Piece(s1, '^', 4), '|', 1);
-    TollFreePhone                       := Piece(s1,'^',8);
     ClinicFAX                           := Piece(Piece(s1, '^', 4), '|', 2);
+    TollFreePhone                       := Piece(s1,'^', 8);
     SigName                             := Piece(s1, '^', 1);
     SigTitle                            := Piece(s1, '^', 2);
-    IntakeNote                          := Piece(s0, '^', 4);
-    InterimNote                         := Piece(s0, '^', 5);
-    DischargeNote                       := Piece(s0, '^', 6);
+    IntakeNoteIEN                       := Piece(s0, '^', 4);   //IEN of note TITLE
+    InterimNoteIEN                      := Piece(s0, '^', 5);   //IEN of note TITLE
+    DischargeNoteIEN                    := Piece(s0, '^', 6);   //IEN of note TITLE
+    MissedApptNoteIEN                   := Piece(s0, '^', 15);  //IEN of note TITLE
     SimplePhoneCPT                      := Piece(s0, '^', 7);
     SubsequentVisitCPT                  := Piece(s0, '^', 8);
     ComplexPhoneCPT                     := Piece(s0, '^', 9);
@@ -448,12 +627,15 @@ begin
   with Parameters do begin
     ResultStr := '-1^Unknown Error';
     CallV('TMG ORAM GET TEMPL ENTRIES',[DUZ]);
-    //Results:  1^OK^<IEN>^<IEN>^<IEN>^IEN^IEN, or -1^Error message
-    // piece#:    3 -- IEN for Intake Note Template
-    //            4 -- IEN for Interim Note Template
-    //            5 -- IEN for DC Note Template
-    //            6 -- IEN for Missed Appt Template (TIU TEMPLATE #8927)
-    //            7 -- IEN for Note for Patient Template (TIU TEMPLATE #8927)
+    //Result:  1^OK^<IEN>;<TemplateName>^<IEN>;<TemplateName>^<IEN>;<TemplateName>^<IEN>;<TemplateName>^<IEN>;<TemplateName>
+    //         or -1^Error message
+    //   piece#:    3 -- IEN for Intake Note Template (TIU TEMPLATE #8927);<TemplateName>
+    //              4 -- IEN for Interim Note Template (TIU TEMPLATE #8927);<TemplateName>
+    //              5 -- IEN for DC Note Template (TIU TEMPLATE #8927);<TemplateName>
+    //              6 -- IEN for Missed Appt Template (TIU TEMPLATE #8927);<TemplateName>
+    //              7 -- IEN for Note for Patient Template (TIU TEMPLATE #8927);<TemplateName>
+
+
     if RPCBrokerV.Results.Count >= 1 then ResultStr := RPCBrokerV.Results[0];
     if piece(ResultStr,'^',1) <> '1' then begin
       InfoBox('Error getting note templates.' + CRLF +
@@ -462,11 +644,21 @@ begin
               'RPC Error', MB_OK or MB_ICONSTOP);
       exit;
     end;
-    IENIntakeNoteTemplate := piece(ResultStr,'^',3);
-    IENInterimNoteTemplate := piece(ResultStr,'^',4);
-    IENDCNoteTemplate := piece(ResultStr,'^',5);
-    IENMissedApptNoteTemplate := piece(ResultStr,'^',6);
-    IENNoteForPatientNoteTemplate := piece(ResultStr,'^',7);
+    temp := piece(ResultStr,'^',3);
+    IENIntakeNoteTemplate :=          piece(temp,';',1);
+    NameIntakeNoteTemplate :=         piece(temp,';',2);
+    temp := piece(ResultStr,'^',4);
+    IENInterimNoteTemplate :=         piece(temp,';',1);
+    NameInterimNoteTemplate :=        piece(temp,';',2);
+    temp := piece(ResultStr,'^',5);
+    IENDCNoteTemplate :=              piece(temp,';',1);
+    NameDCNoteTemplate :=             piece(temp,';',2);
+    temp := piece(ResultStr,'^',6);
+    IENMissedApptNoteTemplate :=      piece(temp,';',1);
+    NameMissedApptNoteTemplate :=     piece(temp,';',2);
+    temp := piece(ResultStr,'^',7);
+    IENNoteForPatientNoteTemplate :=  piece(temp,';',1);
+    NameNoteForPatientNoteTemplate := piece(temp,';',2);
   end;
   result := true; //OK if we got this far
 end;
@@ -530,6 +722,10 @@ begin
   SL.Clear;
   //get list of established AC Clinics
   CallV('ORAMSET GETCLINS',[]);
+  //Resulting format:
+  //  OUT(0)=1     <--- list count
+  //  OUT(1)="Family Physicians^17;SC("
+  //  ...
   RPCResult := '0';  //default to RPC error state
   Result := true;    //default to success
   if RPCBrokerV.Results.count > 0 then begin
@@ -651,27 +847,6 @@ begin
   result := sCallV('ORWTPP GETDCOS',[]);
 end;
 
-function UpdateTIUSignerAndCoSigner(TIUIEN, ProviderDUZ, CosignerDUZ : string) : string;
-begin
-  with RPCBrokerV do begin
-    ClearParameters := True;
-    RemoteProcedure := 'TIU UPDATE RECORD';
-    Param[0].PType := literal;
-    Param[0].Value := TIUIEN;
-    Param[1].PType := list;
-    with Param[1] do begin
-      Mult['(1202)'] := ProviderDUZ;
-      Mult['(1208)'] := CosignerDUZ;
-    end;
-  end;
-  Result := RPCBrokerV.strCall;
-end;
-
-function DeleteTIUNote(TIUIEN : string) : string;
-begin
-  result := sCallV('TIU DELETE RECORD', [TIUIEN]);
-end;
-
 function OrderIt(AppState : TAppState; code: string): string;
 begin
   with RPCBrokerV do begin
@@ -699,11 +874,12 @@ begin
 end;
 
 
-procedure SetPatientCareEncounterInfo(AppState : TAppState);
+procedure SetPatientCareEncounterInfo(AppState : TAppState; CosignerDUZ : string);
+//kt NOTE: doesn't seem to be used....
 var ECHzero : string;
     ProvDUZ : string;
 begin
-  ProvDUZ := IfThenStr(AppState.CosignerDUZ <> '', AppState.CosignerDUZ + '~', '')
+  ProvDUZ := IfThenStr(CosignerDUZ <> '', CosignerDUZ + '~', '')
              + AppState.Provider.DUZ;
   ECHzero := ProvDUZ + '|' +
              AppState.Parameters.DSSId + '|' +
@@ -975,8 +1151,8 @@ begin
 
     TMGNode :=
       BOOL_YN[Flowsheet.DosingEdited] + '^' +                      //TMG;1
-      DocsHoldNumOfDays + '^' +                                    //TMG;2
-      DocsTakeNumTabsToday + '^' +                                 //TMG;3
+      DoseHoldNumOfDays + '^' +                                    //TMG;2
+      DoseTakeNumMgToday + '^' +                                   //TMG;3
       DateTimeToFMDTStr(DocsAppointmentNoShowDate) + '^' +         //TMG;4
       BOOL_YN[DocsPtMoved] + '^' +                                 //TMG;5
       DocsPtTransferTo + '^' +                                     //TMG;6

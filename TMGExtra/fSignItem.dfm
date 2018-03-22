@@ -4,8 +4,8 @@ object frmSignItem: TfrmSignItem
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Electronic Signature'
-  ClientHeight = 124
-  ClientWidth = 405
+  ClientHeight = 147
+  ClientWidth = 408
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,7 @@ object frmSignItem: TfrmSignItem
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = True
-  Position = poScreenCenter
+  Position = poMainFormCenter
   PixelsPerInch = 96
   TextHeight = 13
   object lblESCode: TLabel
@@ -33,35 +33,42 @@ object frmSignItem: TfrmSignItem
     Lines.Strings = (
       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     ReadOnly = True
-    TabOrder = 1
+    TabOrder = 0
   end
-  object txtESCode: TCaptionEdit
+  object txtESCode: TEdit
     Left = 8
     Top = 95
     Width = 141
     Height = 21
     PasswordChar = '*'
-    TabOrder = 0
-    Caption = 'Signature Code'
+    TabOrder = 1
   end
   object cmdOK: TButton
-    Left = 239
-    Top = 95
+    Left = 250
+    Top = 118
     Width = 72
     Height = 21
     Caption = 'OK'
     Default = True
-    TabOrder = 2
+    TabOrder = 3
     OnClick = cmdOKClick
   end
   object cmdCancel: TButton
-    Left = 325
-    Top = 95
+    Left = 328
+    Top = 118
     Width = 72
     Height = 21
     Cancel = True
     Caption = 'Cancel'
-    TabOrder = 3
+    TabOrder = 4
     OnClick = cmdCancelClick
+  end
+  object ckbAddCosigner: TCheckBox
+    Left = 8
+    Top = 122
+    Width = 137
+    Height = 17
+    Caption = 'Add Cosigner(s) to note'
+    TabOrder = 2
   end
 end

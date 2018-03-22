@@ -43,7 +43,7 @@ type
 
 implementation
 
-uses VA508AccessibilityRouter;
+//uses VA508AccessibilityRouter;
 
 {$R *.DFM}
 
@@ -218,6 +218,6 @@ end;
 
 
 initialization
-  SpecifyFormIsNotADialog(TfraVisitRelated);
+  //SpecifyFormIsNotADialog(TfraVisitRelated);
 
 end.

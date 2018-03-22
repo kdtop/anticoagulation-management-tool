@@ -75,7 +75,7 @@ implementation
 {$R *.dfm}
 
 uses
-  fAnticoagulator, fEditComplications, rRPCs, fCompletedVisitLetter, uUtility;
+  fAnticoagulator, fEditComplications, rRPCs, fCompletedVisitNote, uUtility;
 
 
 procedure TfrmEditFlowsheetEntry.btnCancelClick(Sender: TObject);
@@ -101,19 +101,19 @@ end;
 
 procedure TfrmEditFlowsheetEntry.btnEditDocumentationClick(Sender: TObject);
 var
-  frmCompletedVisitLetter: TfrmCompletedVisitLetter;
+  frmCompletedVisitNote: TfrmCompletedVisitNote;
   TempAppState : TAppState;
 
 begin
-  frmCompletedVisitLetter := TfrmCompletedVisitLetter.Create(Self);
+  frmCompletedVisitNote := TfrmCompletedVisitNote.Create(Self);
   TempAppState := TAppState.Create;
   try
     TempAppState.Assign(FAppState);
-    if frmCompletedVisitLetter.ShowModal(TempAppState, FOneFlowsheet) = mrOK then begin
+    if frmCompletedVisitNote.ShowModal(TempAppState, FOneFlowsheet) = mrOK then begin
       FAppState.Assign(TempAppState);
     end;
   finally
-    frmCompletedVisitLetter.Free;
+    frmCompletedVisitNote.Free;
     TempAppState.Free;
   end;
 end;

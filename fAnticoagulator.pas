@@ -26,7 +26,8 @@ uses
   ORCtrls, fCosign, ExtDlgs, fSplash, {VA508AccessibilityManager,} fTimeout, uInit,
   uTMGMods, rRPCs, uFlowsheet, uTypes, uPastINRs,   //kt
   uHTMLTools, TMGHTML2, Math, fActivityDetail, //kt
-  Menus, Mask, Buttons, VA508AccessibilityManager, VclTee.TeeGDIPlus,
+  System.UITypes,
+  Menus, Mask, Buttons, {VA508AccessibilityManager,} VclTee.TeeGDIPlus,
   Vcl.ValEdit;
 
 type
@@ -245,9 +246,18 @@ type
     btnSwapThur: TBitBtn;
     btnSwapFri: TBitBtn;
     btnSwapSat: TBitBtn;
-    btnDocumentation: TBitBtn;
     pnlHighlightEditPref: TPanel;
     btnEditPatient: TBitBtn;
+    gbxInstructions: TGroupBox;
+    lblHoldDays: TLabel;
+    lblExtraMgsToday: TLabel;
+    ckbHold: TCheckBox;
+    edtNumHoldDays: TEdit;
+    ckbTake: TCheckBox;
+    edtTakeNumMgToday: TEdit;
+    memPatientInstructions: TMemo;
+    lblMissedApptDate: TLabel;
+    dtpMissedAppt: TDateTimePicker;
     procedure cbxINRGoalClick(Sender: TObject);
     procedure btnDemoNextClick(Sender: TObject);
     procedure rbPhoneCClick(Sender: TObject);
@@ -259,7 +269,6 @@ type
     procedure edtICDCodeChange(Sender: TObject);
     procedure ckbCBCOrderClick(Sender: TObject);
     procedure ckbINROrderClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure cbUse2PillsClick(Sender: TObject);
     procedure cboPS2Change(Sender: TObject);
     procedure cboPSChange(Sender: TObject);          //kt added 12/17
@@ -275,7 +284,6 @@ type
     procedure btnCancelDoseClick(Sender: TObject);
     procedure rbNoMCClick(Sender: TObject);
     procedure SetEClinic(AnAppState : TAppState);
-    procedure btnDocumentationClick(Sender: TObject);
     procedure cboPSExit(Sender: TObject);
     procedure edtPtNoteKeyPress(Sender: TObject; var Key: Char);
     procedure btnXPCEnter(Sender: TObject);
@@ -348,6 +356,13 @@ type
     procedure btnViewFlowsheetGridClick(Sender: TObject);
     procedure btnDocumentationNextClick(Sender: TObject);
     procedure btnSwapClick(Sender: TObject);
+    procedure edtNumHoldDaysChange(Sender: TObject);
+    procedure edtTakeNumMgTodayChange(Sender: TObject);
+    procedure memPatientInstructionsEnter(Sender: TObject);
+    procedure memPatientInstructionsChange(Sender: TObject);
+    procedure memPatientInstructionsClick(Sender: TObject);
+    procedure dtpMissedApptChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FEditCtrl:                        TCustomEdit;
     FCreationStep:                    Integer;
@@ -356,18 +371,15 @@ type
     FEditingDoses :                   boolean;
     PreviousDisplayedApptTime:        TDateTime;
     InitialReturnApptDateTime:        TDateTime;
-    FParamLineDFN :                   string;
     procedure SetDosingGridEnable(Enabled: boolean);
     procedure SetDosingGridColors;
     function  CheckDrawDay: Boolean;
     procedure SetDebugMenu;
     function  InitForPatient(ADFN : string) : boolean;
-    procedure SignMe();
     function  ApplyParameters(Parameters : TParameters) : boolean;
     procedure SetIfUsingTwoPills(Value : boolean);
     procedure RefreshDosingGrid;
     procedure SetHctOrHgbInfo(HctOrHgb,DateStr : string);
-    procedure StartNote;
     function  PatientDataToGUI() : boolean;
     procedure DosingDataToScreen(Data : TOneFlowsheet);
     procedure SetWeeklyDoseComparisonControlVisibility(VisibleVal : boolean);
@@ -390,6 +402,8 @@ type
     procedure RefreshGraph;
     procedure RefreshDemographics;
     procedure cboSitePullData;
+    procedure PullExtraInstructionsData;
+    function  DocumentationOK : boolean;
   protected
     AppState         : TAppState;
     Patient          : TPatient;       //This is an alias for convenience.  Real object owned by AppState.
@@ -398,8 +412,9 @@ type
     CurrentFlowsheet : TOneFlowsheet;  //This is an alias for convenience.  Real object owned by AppState
   public
     sgDosingData : TStringGrid;  //doesn't own items.
-    DosingLabelsList : TList;   //doesn't own items.
-    SwapButtonsList : TList;    //doesn't own items
+    DosingLabelsList : TList;    //doesn't own items.
+    SwapButtonsList : TList;     //doesn't own items
+    function Initialize(ADFN : string = '') : boolean;
   end;
 
 var
@@ -422,11 +437,12 @@ const
 implementation
 
 uses
-  fCompletedVisitLetter, fCompleteConsult, fSignItem, fEditFlowsheet, uUtility,//kt
+  fCompletedVisitNote, fCompleteConsult, fSignItem, fEditFlowsheet, uUtility,//kt
   fCustomINRGoal, fNewPatientInstructions, fNewIndication,   //kt
   fUnlockPatient, fEditComplications, fOutsideLab, fPatientInformation, //kt
   Clipbrd, fAboutACM, {VA508AccessibilityRouter,} VAUtils, fPCE, fxBroker, fBridgeCommentsDialog,
-  fStartAnticoagMgmt, fReminder, fMissedAppt, fEndAnticoagMgmt, fViewFlowsheetGrid
+  fStartAnticoagMgmt, fReminder, fMissedAppt, fEndAnticoagMgmt, fViewFlowsheetGrid,
+  fAMTEditMemo
   ;
 
 {$R *.DFM}
@@ -466,20 +482,6 @@ begin
 end;
 
 
-procedure TfrmAnticoagulate.SignMe();
-var EncSig :string;
-begin
-  if AppState.EClinic = '' then AppState.EClinic := Parameters.NonCountClinic;
-  SignatureForItem(12, 'Sign Document', 'Electronic Signature Code', EncSig);
-  if EncSig='' then exit;
-  SignRecord(AppState.NoteIEN, EncSig);
-  if AppState.FTitle = Parameters.IntakeNote then begin
-    CompleteConsult (Parameters,
-                     AppState.NoteIEN,
-                     Provider.DUZ,
-                     Patient.DFN);
-  end;
-end;
 
 function TfrmAnticoagulate.ApplyParameters(Parameters : TParameters) : boolean;
 // result: True = success, false = error.
@@ -608,30 +610,61 @@ begin
   if not AppState.FilePCEData then AppState.PCEProcedureStr := '0';
 end;
 
+
+function TfrmAnticoagulate.Initialize(ADFN : string = '') : boolean;
+//Results: TRUE if OK, or FALSE if problem with connection.
+var
+  i : integer;
+  DFN :                   string;
+
+begin
+  Result := false;
+  DFN := ADFN;
+  if DFN = '' then begin
+    for i := 1 to ParamCount do begin
+      if UpperCase(Piece(ParamStr(i), '=', 1)) = 'D' then begin
+        DFN := Piece(ParamStr(i), '=', 2);
+        break;
+      end;
+    end;
+  end;
+  if DFN = '' then begin
+    InfoBox('Application not called with patient DFN specified in parameters.' + CRLF +
+            'Should be launched from CPRS, where this will occur automatically.' +  CRLF +
+            'Will now abort.', 'Error', MB_OK or MB_ICONSTOP);
+    AbortExecution;
+    exit;
+  end;
+
+  // connect to the server and create an option context
+  FCreationStep := FCP_SERVER;
+  if not ConnectToServer('ORAM ANTICOAGULATION CONTEXT') then begin
+    if Assigned(RPCBrokerV) and (RPCBrokerV.RPCBError <> '') then begin
+      InfoBox(RPCBrokerV.RPCBError, 'Error', MB_OK or MB_ICONSTOP);
+    end;
+    AbortExecution;
+    exit;
+  end;
+
+  if InitForPatient(DFN) = false then begin
+    AbortExecution;
+    exit;
+  end;
+
+  PopupReminderBoxIfAppropriate(Patient);
+
+  //If we got this far, all is OK
+  Result := true;
+end;
+
+
 procedure TfrmAnticoagulate.FormCreate(Sender: TObject);
 var
-  ServerStr: String;
-  PortStr: String;
   i : integer;
 
 begin
   cboSite.Tag := integer(pointer(TStringList.Create));        //kt This will have a 1:1 relationship between RPC source and .Items display
   cboIndication.Tag := integer(pointer(TStringList.Create));  //kt This will have a 1:1 relationship between RPC source and .Items display
-
-  FParamLineDFN := '';
-  for i := 1 to ParamCount do begin
-    if UpperCase(Piece(ParamStr(i), '=', 1)) = 'D' then begin
-      FParamLineDFN := Piece(ParamStr(i), '=', 2);
-      break;
-    end;
-  end;
-  if FParamLineDFN = '' then begin
-    InfoBox('Application not called with patient DFN specified in parameters.' + CRLF +
-            'Should be launched from CPRS, where this will occur automatically.' +  CRLF +
-            'Will now abort.', 'Error', MB_OK or MB_ICONSTOP);
-    AbortExecution;
-    Exit;
-  end;
 
   AppState := TAppState.Create();
   //AppState.AccessibilityManager := AccessibilityManager;
@@ -641,27 +674,14 @@ begin
   Parameters       := AppState.Parameters;          //alias pointer for programming convenience
   CurrentFlowsheet := AppState.CurrentNewFlowsheet; //alias pointer for programming convenience
 
-  ServerStr := '';
-  PortStr := '';
-
   sbxPMsg.DoubleBuffered := True;
   PreviousDisplayedApptTime := -1;
 
   FCreationStep := FCP_SETHOOK;
-  InitTimeOut(TimeoutCondition, TimeOutAction);
 
-  //initialize RetainedRPCMax to ___ since most calls occur during FormCreate
   SetRetainedRPCMax(50);
 
-  // connect to the server and create an option context
-  FCreationStep := FCP_SERVER;
-  if not ConnectToServer('ORAM ANTICOAGULATION CONTEXT') then begin
-    if Assigned(RPCBrokerV) and (RPCBrokerV.RPCBError <> '') then begin
-      InfoBox(RPCBrokerV.RPCBError, 'Error', MB_OK or MB_ICONSTOP);
-    end;
-    AbortExecution;
-    Exit;
-  end;
+  InitTimeOut(TimeoutCondition, TimeOutAction);
 
   sgDosingData := TStringGrid.Create(frmAnticoagulate);   //doesn't own held objects
   sgDosingData.visible := false;
@@ -749,17 +769,8 @@ begin
   SwapButtonsList.Add(btnSwapSat);
 end;
 
-procedure TfrmAnticoagulate.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfrmAnticoagulate.FormDestroy(Sender: TObject);
 begin
-  Patient.Unlock;
-  if AppState.NoteIEN <> '' then begin
-    if InfoBox('You have a progress note, do you want to file it?',
-               'File Progress Note?', MB_YESNO or MB_ICONQUESTION) = mrYes then begin
-      SignMe();
-    end else begin
-      DeleteTIUNote(AppState.NoteIEN);
-    end;
-  end; //notenumber
   sgDosingData.Free;
   DosingLabelsList.Free;
   SwapButtonsList.Free;
@@ -768,13 +779,20 @@ begin
   TStringList(cboIndication.Tag).Free;
 end;
 
-procedure TfrmAnticoagulate.FormShow(Sender: TObject);
+procedure TfrmAnticoagulate.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if InitForPatient(FParamLineDFN) = false then begin
-    AbortExecution;
-  end;
+  Patient.Unlock;
+  {
+  if AppState.NoteIEN <> '' then begin
+    if InfoBox('You have a progress note, do you want to file it?',
+               'File Progress Note?', MB_YESNO or MB_ICONQUESTION) = mrYes then begin
+      SignNote();
+    end else begin
+      DeleteTIUNote(AppState.NoteIEN);
+    end;
+  end; //notenumber
+  }
 end;
-
 
 procedure TfrmAnticoagulate.SetHctOrHgbInfo(HctOrHgb, DateStr : string);
 begin
@@ -800,7 +818,7 @@ begin
     GetProviderInfo(Provider);
     if not GetClinicsList(cboSite, Patient) then exit;
     FCreationStep := FCP_PARAMS;
-    if not GetParametersByRPC(Provider.DUZ, Patient.ClinicIEN, Parameters) then exit;
+    if not GetParametersByRPC(Provider.DUZ, Patient.ClinicLoc, Parameters) then exit;
     FCreationStep := FCP_FORMS;
     GetPastINRValues(Patient.DFN, AppState);
     Patient.FlowsheetData.LoadFromServer(Patient.DFN);
@@ -932,6 +950,15 @@ begin
     RefreshModifiableData;
     pcMain.ActivePage := tsOverview;
     btnDemoNext.SetFocus;
+
+    //I am not going to carry over extra instructions from last time.
+    ckbHold.Checked := false;
+    ckbTake.Checked := false;
+    edtTakeNumMgToday.Text := '';
+    edtNumHoldDays.Text := '';
+    memPatientInstructions.Lines.Clear;
+    ckbHold.Checked := false;
+    ckbTake.Checked := false;
   finally
     AppState.PushingDataToScreen := PushingState;
   end;
@@ -1008,9 +1035,16 @@ const
   CAPTION : array[false..true] of string = (
     'Flag as &Missed Appt',
     'Unflag &Missed Appt'   );
+var
+  NoShow : boolean;
 begin
-  btnMissedAppt.Caption := CAPTION[AppState.AppointmentShowStatus = tsvNoShow];
-  lblMissedAppt.Visible       := (AppState.AppointmentShowStatus = tsvNoShow);
+  NoShow := (AppState.AppointmentShowStatus = tsvNoShow);
+  btnMissedAppt.Caption := CAPTION[NoShow];
+  lblMissedAppt.Visible := NoShow;
+  lblMissedApptDate.Visible := NoShow;
+  dtpMissedAppt.Visible := NoShow;
+  AppState.AppointmentNoShowDate := IfThenDT(NoShow, Now, 0);
+  dtpMissedAppt.DateTime := AppState.AppointmentNoShowDate;
 
   gbxShow.Visible := not Patient.NewPatient;
   if Patient.PctNoShow = '' then begin
@@ -1020,6 +1054,7 @@ begin
     lblPctNoShow.Caption := Patient.PctNoShow + '%';
     lblPctNoShowDenominator.Caption := 'of '+ Patient.TotalVisits + ' visits:';
   end;
+
 end;
 
 procedure TfrmAnticoagulate.RefreshGraphTitle;
@@ -1193,6 +1228,12 @@ begin
   lblPillStrength2.Enabled := Row2Enabled;
   SetWeeklyDoseComparisonControlVisibility(Enabled);
   SetDosingGridColors;
+
+  gbxInstructions.Enabled := Enabled;
+  ckbHold.Enabled := Enabled;
+  ckbTake.Enabled := Enabled;
+  memPatientInstructions.Enabled := Enabled;
+
 end;
 
 procedure TfrmAnticoagulate.SetDosingGridColors;
@@ -1274,6 +1315,12 @@ begin
     exit;
   end;
 
+  if (AppState.PCEProcedureStr = '') and AppState.FilePCEData then begin
+    InfoBox('Please complete PCE Data before exiting.',
+            'Incomplete Encounter Information', MB_OK or MB_ICONEXCLAMATION);
+    exit;
+  end;
+
   if IsPastDate(Patient.NextScheduledINRCheckDate) then begin
     InfoBox('The next lab draw date of ' + DateToStr(Patient.NextScheduledINRCheckDate) + ' is NOT a future date.' + CRLF +
             'Please adjust it to complete the update.', 'Invalid Date', MB_OK or MB_ICONEXCLAMATION);
@@ -1313,11 +1360,6 @@ begin
     exit;
   end;
 
-  if not AppState.DocumentationDialogLaunched then begin
-    InfoBox('Please document visit by clicking [Document Visit] button first.', 'Needs visit documentation', MB_OK or MB_ICONEXCLAMATION);
-    exit;
-  end;
-
   result := true; //OK to exit if we got this far.
 end;
 
@@ -1326,6 +1368,7 @@ function TfrmAnticoagulate.DoExitingPrep() : boolean;
 var frmPCE : TfrmPCE;
     ModalResult : integer;
 begin
+  SetEClinic(AppState);
   result := true;
   if IsPastDate(Patient.NextScheduledINRCheckDate) then begin
     if AppState.AppointmentShowStatus = tsvUnDef then begin
@@ -1356,13 +1399,12 @@ begin
   // ** begin ordering section
   if PATIENT.SaveMode = tsmSave then begin
     if (AppState.INROrderSelected or AppState.CBCOrderSelected) and not Patient.DischargedFromClinic then begin  //orders labs
-      if not CosignerNeeded(tcfOrder, AppState, '') then begin
+      if not CosignerNeeded(tcfOrder, AppState, AppState.NoteInfo.CosignerDUZ) then begin
         if AppState.INROrderSelected then OrderIt(AppState, 'INR');
         if AppState.CBCOrderSelected then OrderIt(AppState, 'CBC');
       end;
     end;  //OrderIt
   end;  // ** ordering section
-
 
   if (AppState.EClinic = '') then SetEClinic(AppState);  //Encounter location needed for ordering
   if AppState.FilePCEData then begin
@@ -1395,19 +1437,47 @@ begin
   end;
 end;
 
+function TfrmAnticoagulate.DocumentationOK : boolean;
+var
+  frmCompletedVisitNote: TfrmCompletedVisitNote;
+  ErrMsg : string;
+begin
+  Result := false; //default to failure
+  frmCompletedVisitNote := TfrmCompletedVisitNote.Create(Self);
+  Try
+    if frmCompletedVisitNote.ShowModal(AppState, AppState.CurrentNewFlowsheet) = mrOK then begin
+      if not frmCompletedVisitNote.NoNoteSave then begin
+        if not frmCompletedVisitNote.MakeAndSaveTIUNote(ErrMsg) then begin
+          MessageDlg('Aborting Exit because: "'+ErrMsg+'"', mtError, [mbOK], 0);
+        end;
+      end;
+      AppState.Assign(frmCompletedVisitNote.ModifiedAppState);
+      //NOTE: frmCompletedVisitLetter copies and modifies the AppState and the flowsheet.
+      //     So even though we are passing in a pointer the flowsheet contained in AppState, the
+      //     *modified* flowsheet in frmCompletedVisitLetter is NOT the same object as
+      //     AppState.CurrentNewFlowsheet.  So I need to copy is separately.
+      AppState.CurrentNewFlowsheet.Assign(frmCompletedVisitNote.ModifiedFlowsheet);  //In form, flowsheet is modified separately from AppState.CurrentNewFlowsheet
+      Result := true;
+    end;
+  Finally
+    frmCompletedVisitNote.Free;
+  End;
+end;
+
 procedure TfrmAnticoagulate.btnCompleteVisitClick(Sender: TObject);      //PREPARES AND SENDS DATA; CLOSES FORM
 begin
   if not OKToExit() then exit;
   if not DoExitingPrep then exit;
+  if not DocumentationOK then exit;
   if AppState.FilePCEData then FilePCEData(AppState);
   ManageTeamLists(AppState);  //if SAVE mode and not NewPt, remove pt. from current list
   if Patient.NewPatient then begin
     AddNewPatient(Patient.DFN);  //this adds a new patient to the database file
     Patient.NewPatient := false;
   end;
+
   Patient.SaveToServer(AppState);
   CurrentFlowsheet.SaveToServer(AppState);
-  if AppState.NoteIEN <> '' then SignMe();
 
   {//To Do -- restore later!  Will need to be instantiated first...
   if frmCompleteConsult.lbxConsult.Count > 0 then begin
@@ -1569,6 +1639,37 @@ end;
 procedure TfrmAnticoagulate.memCommentsExit(Sender: TObject);
 begin
  CurrentFlowsheet.Comments.Assign(memComments.Lines);
+end;
+
+procedure TfrmAnticoagulate.memPatientInstructionsChange(Sender: TObject);
+begin
+  if AppState.PushingDataToScreen then exit;
+  CurrentFlowsheet.PatientInstructions.Assign(memPatientInstructions.Lines);
+end;
+
+procedure TfrmAnticoagulate.memPatientInstructionsClick(Sender: TObject);
+begin
+  memPatientInstructionsEnter(Sender);
+end;
+
+procedure TfrmAnticoagulate.memPatientInstructionsEnter(Sender: TObject);
+var
+  frmAMTEditMemo: TfrmAMTEditMemo;
+  temp : boolean;
+begin
+  frmAMTEditMemo := TfrmAMTEditMemo.Create(Self);
+  try
+    if frmAMTEditMemo.ShowModal(CurrentFlowsheet.PatientInstructions) = mrOK then begin
+      CurrentFlowsheet.PatientInstructions.Assign(frmAMTEditMemo.memMemo.Lines);
+      temp := AppState.PushingDataToScreen;
+      AppState.PushingDataToScreen := true;
+      memPatientInstructions.Lines.Assign(CurrentFlowsheet.PatientInstructions);
+      AppState.PushingDataToScreen := temp;
+    end;
+  finally
+    frmAMTEditMemo.Free;
+  end;
+  ckbHold.SetFocus;
 end;
 
 procedure TfrmAnticoagulate.btnEditDoseNextClick(Sender: TObject);
@@ -1763,11 +1864,18 @@ begin
 
 end;
 
+procedure TfrmAnticoagulate.dtpMissedApptChange(Sender: TObject);
+begin
+  AppState.AppointmentNoShowDate := dtpMissedAppt.DateTime;
+end;
+
 procedure TfrmAnticoagulate.FormActivate(Sender: TObject);
 begin
+  {
   SplashClose;
   frmAnticoagulate.Show;
   PopupReminderBoxIfAppropriate(Patient);
+  }
 end;
 
 procedure TfrmAnticoagulate.btnTempSaveClick(Sender: TObject);
@@ -1833,36 +1941,6 @@ begin
   end;
 end;
 
-procedure TfrmAnticoagulate.StartNote; //kt
-//To Do Fixx: change this to not using screen controls as data source.
-var ANote: TStringList;
-    IndiText: string;
-    TargetT: string;
-    mDose: string;
-    CINR: string;
-begin
-  if Patient.NewPatient then begin
-    IndiText := 'Indication for anticoagulation: ' + Patient.Indication_Text;
-    TargetT := 'INR Target Range: ' + cbxINRGoal.text;
-    mDose := ' ';
-    CINR := 'Current INR is ' + lblINRval.caption;
-  end;
-  ANote := TStringList.Create;
-  ANote.Add(IndiText);
-  ANote.Add(TargetT);
-  ANote.Add(mDose);
-  ANote.Add(CINR);
-
-  SetEClinic(AppState);
-  AppState.CosignNeeded := CosignerNeeded(tcfNote, AppState, AppState.FTitle);
-  if AppState.CosignOK then begin
-    AppState.NoteIEN := MakeNote(AppState, ANote);
-  end else begin
-    AppState.NoteIEN := '';
-  end;
-  ANote.Free;
-end;
-
 procedure TfrmAnticoagulate.ckbCBCOrderClick(Sender: TObject);
 begin
   AppState.CBCOrderSelected := ckbCBCOrder.checked;
@@ -1871,7 +1949,7 @@ end;
 
 procedure TfrmAnticoagulate.btnCompletedVisitLetterClick(Sender: TObject);
 var
-  frmCompletedVisitLetter: TfrmCompletedVisitLetter;
+  frmCompletedVisitLetter: TfrmCompletedVisitNote;
   TempAppState : TAppState;
 
 begin
@@ -1881,7 +1959,7 @@ begin
     dtpNextApp.SetFocus;
     exit;
   end;
-  frmCompletedVisitLetter := TfrmCompletedVisitLetter.Create(Self);
+  frmCompletedVisitLetter := TfrmCompletedVisitNote.Create(Self);
   TempAppState := TAppState.Create;
   try
     TempAppState.Assign(AppState);
@@ -1892,29 +1970,6 @@ begin
     frmCompletedVisitLetter.Free;
     TempAppState.Free;
   end;
-
-end;
-
-procedure TfrmAnticoagulate.btnDocumentationClick(Sender: TObject);
-var
-  frmCompletedVisitLetter: TfrmCompletedVisitLetter;
-
-begin
-  SetEClinic(AppState);
-  //Check whether location can be determined
-  if (AppState.PCEProcedureStr = '') and AppState.FilePCEData then begin
-    InfoBox('Please complete PCE Data before entering note.',
-            'Incomplete Encounter Information', MB_OK or MB_ICONEXCLAMATION);
-    exit;
-  end;
-  frmCompletedVisitLetter := TfrmCompletedVisitLetter.Create(Self);
-  Try
-    if frmCompletedVisitLetter.ShowModal(AppState, AppState.CurrentNewFlowsheet) = mrOK then begin
-      AppState.DocumentationDialogLaunched := true;
-    end;
-  Finally
-    frmCompletedVisitLetter.Free;
-  End;
 
 end;
 
@@ -1969,6 +2024,15 @@ end;
 procedure TfrmAnticoagulate.edtPtNoteKeyPress(Sender: TObject; var Key: Char);
 begin
   if key = chr(13) then memComments.SetFocus;
+end;
+
+procedure TfrmAnticoagulate.edtTakeNumMgTodayChange(Sender: TObject);
+var Valid : boolean;
+begin
+  Valid := (StrToIntDef(edtTakeNumMgToday.Text,-1) <> -1) or (ckbTake.Checked = false);
+  edtTakeNumMgToday.Color := VALID_COLOR[Valid];
+  if AppState.PushingDataToScreen then exit;
+  PullExtraInstructionsData;
 end;
 
 procedure TfrmAnticoagulate.btnXPCEnter(Sender: TObject);
@@ -2085,23 +2149,23 @@ end;
 
 procedure TfrmAnticoagulate.ckbHoldClick(Sender: TObject);
 begin
-  {//kt I can't find ckbHold...  May have to look at original source...
-  if ckbHold.Checked = true then begin
-    ckbTake.Checked := false;
-    edtTTabs.Text := '';
-    //edtTDays.Text := '';
-    ckbWS.Checked := false;
-    btnCVL.Enabled := true;
-    if not (memDCNote.Lines.Count > 0) then
-      ckbCAInclInst.Enabled := true;
-    btnCVL.Width := 75;
-    btnCVL.Caption := '&OK';
-    memCL.Clear;
-  end else begin
-    btnCVL.Enabled := false;
-    //kt ckbCAInclInst.Enabled := false;
-  end;
-  }
+  if AppState.PushingDataToScreen then exit;
+  AppState.PushingDataToScreen := true;
+  edtNumHoldDays.Enabled := ckbHold.Checked;
+  if not ckbHold.Checked then edtNumHoldDays.Text := '';
+  lblHoldDays.Enabled := ckbHold.Checked;
+  ckbTake.Checked := false;
+  edtTakeNumMgToday.Text := '';
+  edtNumHoldDaysChange(Self);
+  edtTakeNumMgTodayChange(Self);
+  AppState.PushingDataToScreen := false;
+  PullExtraInstructionsData;
+end;
+
+procedure TfrmAnticoagulate.PullExtraInstructionsData;
+begin
+  CurrentFlowsheet.DoseTakeNumMgToday := IfThenStr(ckbTake.Checked, edtTakeNumMgToday.Text, '');
+  CurrentFlowsheet.DoseHoldNumOfDays := edtNumHoldDays.Text;
 end;
 
 procedure TfrmAnticoagulate.ckbINROrderClick(Sender: TObject);
@@ -2111,22 +2175,18 @@ end;
 
 procedure TfrmAnticoagulate.ckbTakeClick(Sender: TObject);
 begin
-  { //kt I can't find ckbTake.  Moved to another form??
-  if ckbTake.Checked = true then begin
-      ckbHold.Checked := false;
-      edtHDays.Text := '';
-      ckbWS.Checked := false;
-      btnCVL.Enabled := true;
-      if not (memDCnote.Lines.Count > 0) then
-        ckbCAInclInst.Enabled := true;
-      btnCVL.Width := 75;
-      btnCVL.Caption := '&OK';
-      memCL.Clear;
-  end else begin
-    btnCVL.Enabled := false;
-    //kt ckbCAInclInst.Enabled := false;
-  end;
-  }
+  if AppState.PushingDataToScreen then exit;
+  AppState.PushingDataToScreen := true;
+
+  edtTakeNumMgToday.Enabled := ckbTake.Checked;
+  if not ckbTake.Checked then edtTakeNumMgToday.Text := '';
+  lblExtraMgsToday.Enabled := ckbTake.Checked;
+  ckbHold.Checked := false;
+  edtNumHoldDays.Text := '';
+  edtNumHoldDaysChange(Self);
+  edtTakeNumMgTodayChange(Self);
+  AppState.PushingDataToScreen := false;
+  PullExtraInstructionsData;
 end;
 
 procedure TfrmAnticoagulate.Complications1Click(Sender: TObject);
@@ -2157,8 +2217,7 @@ begin
   if cboSite.ItemIndex > -1 then begin
     cboSitePullData;
 
-    //Result := GetParametersByRPC(Provider.DUZ, Patient.ClinicLoc, Parameters);
-    Result := GetParametersByRPC(Provider.DUZ, Patient.ClinicIEN, Parameters);
+    Result := GetParametersByRPC(Provider.DUZ, Patient.ClinicLoc, Parameters);
     if Result = false then Application.Terminate; //Info box explaining problem already shown in GetParametersByRPC
     Result := ApplyParameters(Parameters);
     if Result = false then Application.Terminate; //Info box explaining problem already shown in ApplyParameters
@@ -2290,7 +2349,7 @@ begin
   pnlHighlightEditPref.Color := clBtnFace;
   PtInfo := TfrmPatientInformation.Create(Self);
   try
-    if PtInfo.ShowModal(AppState) = mrOK then begin
+    if PtInfo.ShowModal(AppState, CurrentFlowSheet) = mrOK then begin
       AppState.Assign(PtInfo.ModifiedAppState);  //this also copies (assigns) all contained objects, including Patient.
       //CurrentNewFlowsheet.Comments
       if Patient.DischargedFromClinic = true then begin
@@ -2329,6 +2388,15 @@ end;
 procedure TfrmAnticoagulate.edtICDCodeChange(Sender: TObject);
 begin
   Patient.Indication_ICDCode := Trim(edtICDCode.Text);
+end;
+
+procedure TfrmAnticoagulate.edtNumHoldDaysChange(Sender: TObject);
+var Valid : boolean;
+begin
+  Valid := (StrToIntDef(edtNumHoldDays.Text ,-1) <> -1) or (ckbHold.Checked = false);
+  edtNumHoldDays.Color := VALID_COLOR[Valid];
+  if AppState.PushingDataToScreen then exit;
+  PullExtraInstructionsData;
 end;
 
 procedure TfrmAnticoagulate.btnUnlockClick(Sender: TObject);
@@ -2373,11 +2441,6 @@ begin
 end;
 
 procedure TfrmAnticoagulate.btnMissedApptClick(Sender: TObject);
-const
-  CAPTION : array[false..true] of string = (
-    'Flag as &Missed Appt',
-    'Unflag &Missed Appt'   );
-
 begin
   If AppState.AppointmentShowStatus = tsvNoShow then begin
     AppState.AppointmentShowStatus := tsvKeptAppt ;
@@ -2388,6 +2451,7 @@ begin
     AppState.AppointmentNoShowDate := Now;
   end;
   RefreshNoShowStatus;
+
 end;
 
 procedure TfrmAnticoagulate.cbxINRGoalExit(Sender: TObject);
@@ -2407,7 +2471,7 @@ end;
 
 procedure TfrmAnticoagulate.tsExitShow(Sender: TObject);
 begin
-  if (AppState.NoteIEN = '') then begin
+  if (AppState.NoteInfo.NoteIEN = '') then begin
     if Patient.NewPatient then begin
       //kt Fix later.
       {

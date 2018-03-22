@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ORCtrls, ExtCtrls, ORNet, ORFn, Trpcb,
   uTypes, StrUtils, System.UITypes,
-  VA508AccessibilityManager, Vcl.Buttons;
+  {VA508AccessibilityManager,} Vcl.Buttons;
 
 type
   TfrmCosign = class(TForm)
@@ -15,7 +15,6 @@ type
     pnlTop: TPanel;
     pnlList: TPanel;
     edtCoSign: TEdit;
-    AccessibilityManager: TVA508AccessibilityManager;
     lbCoSign: TListBox;
     Timer: TTimer;
     btnCancel: TBitBtn;
@@ -46,8 +45,11 @@ type
 //var
 //  frmCosign: TfrmCosign;
 
-function CosignerNeeded(CoFactorToCheck : tCofactor; AppState : TAppState;
-                        ATitle: String = ''): boolean;
+function CosignerNeeded(CoFactorToCheck : tCofactor;
+                        AppState : TAppState;
+                        var CosignerDUZ : string;
+                        ATitle: String = '';
+                        ForceAsk: boolean = false     ): boolean;
 
 implementation
 uses
@@ -56,19 +58,22 @@ uses
 
 {$R *.dfm}
 
-function CosignerNeeded(CoFactorToCheck : tCofactor; AppState : TAppState; ATitle: String = ''): boolean;
+function CosignerNeeded(CoFactorToCheck: tCofactor;
+                        AppState: TAppState;
+                        var CosignerDUZ : string;
+                        ATitle: String = '';
+                        ForceAsk : boolean = false): boolean;
 var  frmCosign: TfrmCosign;
 begin
   frmCosign := TfrmCosign.Create(Application);
   try
-    AppState.CosignNeeded := frmCosign.CoSignNeeded(CoFactorToCheck, AppState, ATitle);
-    AppState.CosignerDUZ := '';
-    if AppState.CosignNeeded then begin
+    Result := frmCosign.CoSignNeeded(CoFactorToCheck, AppState, ATitle);
+    CosignerDUZ := '';
+    if (Result=True) or ForceAsk then begin
       if frmCosign.ShowModal = mrOK then begin
-        AppState.CosignerDUZ := frmCosign.CoSignerDUZ;
+        CosignerDUZ := frmCosign.CoSignerDUZ;
       end;
     end;
-    Result := AppState.CosignNeeded;
   finally
     frmCosign.Free;
   end;
@@ -95,14 +100,13 @@ begin
   Provider := AppState.Provider;
 
   if (CofactorMode = tcfNote) and (ATitle <> '') then begin
-    AppState.CosignNeeded := NoteTitleRequiresCoSignature(ATitle, Provider);
+    Result := NoteTitleRequiresCoSignature(ATitle, Provider);
   end else if (CofactorMode = tcfOrder) then begin
-    AppState.CosignNeeded := Provider.CosignNeeded;
+    Result := Provider.CosignNeeded;
   end else begin
-    AppState.CosignNeeded := false; //kt default
+    Result := false; //kt default
   end;
-  if AppState.CosignNeeded then begin
-    Result := true;
+  if Result then begin
     if Provider.DefaultCosigner <> '' then begin
       Default := piece(Provider.DefaultCosigner, '^', 2);
     end else begin
@@ -130,24 +134,29 @@ var
   RPCResult : string;
 begin
   if FCofactorMode = tcfNote then begin
-    RPCResult := UpdateTIUSignerAndCoSigner(FAppState.NoteIEN, FAppState.Provider.DUZ, FCosignerDUZ);
-    if StrToIntDef(RPCResult,0) < 1 then begin
-      InfoBox('Unrecognized co-signer.' + CRLF +
-              'Please check in CPRS for the status of this note.',
-              'Problem Identifying Cosigner', MB_OK or MB_ICONEXCLAMATION);
+    with FAppState do begin
+      if NoteInfo.NoteIEN <> '' then begin
+        RPCResult := AddTIUCosigner(NoteInfo.NoteIEN,FCosignerDUZ);
+        if StrToIntDef(piece(RPCResult,'^',1),0) < 1 then begin
+          InfoBox('Unrecognized co-signer.' + CRLF +
+                  'Please check in CPRS for the status of this note.',
+                  'Problem Identifying Cosigner', MB_OK or MB_ICONEXCLAMATION);
+        end;
+      end;
     end;
   end else if FCofactorMode = tcfOrder then begin       //lab order
     if FAppState.INROrderSelected then OrderIt(FAppState, 'INR');
     if FAppState.CBCOrderSelected then OrderIt(FAppState, 'CBC');
   end;
-  Close;
+  //Close;
 end;
 
 procedure TfrmCosign.lbCoSignClick(Sender: TObject);
 var csitem : string;
 begin
-  csitem := lbCoSign.Items[lbCoSign.ItemIndex];
-  edtCoSign.Text := PIECE(csitem, '^', 2);
+  csitem := CoSignDataSL[lbCoSign.ItemIndex];
+  //csitem := lbCoSign.Items[lbCoSign.ItemIndex];
+  //edtCoSign.Text := PIECE(csitem, '^', 2);
   FCosignerDUZ := PIECE(csitem,'^',1);
   CheckEnableForOKToExit;
 end;
@@ -156,15 +165,19 @@ procedure TfrmCosign.btnCancelClick(Sender: TObject);
 var RPCResult: string;
 begin
   if FCofactorMode = tcfNote then begin
-    if MessageDlg('Are you sure you want to cancel?' + CRLF +
-      'This will result in note being deleted.', mtConfirmation, [mbOK, mbCancel], 0) <> mrOk then exit;
+    with FAppState do begin
+      if NoteInfo.NoteIEN <> '' then begin
+        if MessageDlg('Are you sure you want to cancel?' + CRLF +
+          'This will result in note being deleted.', mtConfirmation, [mbOK, mbCancel], 0) <> mrOk then exit;
 
-    RPCResult := DeleteTIUNote(FAppState.NoteIEN);
-    if StrToIntDef(piece(RPCResult, '^',1),0) = 1 then
-      InfoBox('Unable to delete note: ' + PIECE(RPCResult, '^', 2),
-              'Deletion not Permitted', MB_OK or MB_ICONEXCLAMATION);
-    FAppState.NoteIEN := '';
-    close;
+        RPCResult := DeleteTIUNote(NoteInfo.NoteIEN);
+        if StrToIntDef(piece(RPCResult, '^',1),0) = 1 then
+          InfoBox('Unable to delete note: ' + PIECE(RPCResult, '^', 2),
+                  'Deletion not Permitted', MB_OK or MB_ICONEXCLAMATION);
+        NoteInfo.NoteIEN := '';
+        close;
+      end;
+    end;
   end else if FCofactorMode = tcfOrder then begin
     close;
   end;

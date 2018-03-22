@@ -9,11 +9,12 @@ uses
   ORCtrls, ORFn, ORNet, Trpcb, uFlowsheet,
   uTypes, uUtility, uHTMLTools, TMGHTML2;
 
-  procedure GenerateIntakeNote(AppState :TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
-  procedure GenerateInterimNote(AppState : TAppState; AFlowsheet : TOneFlowsheet ;HTMLObj: THtmlObj);
-  procedure GenerateDCNote(AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
-  procedure GenerateMissedApptNote(AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
+  procedure GenerateIntakeNote        (AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
+  procedure GenerateInterimNote       (AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
+  procedure GenerateDCNote            (AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
+  procedure GenerateMissedApptNote    (AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
   procedure GenerateNoteForPatientNote(AppState : TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
+  procedure GenerateNote              (AppState : TAppState; AFlowsheet : TOneFlowsheet; TemplateIEN : string; HTMLObj: THtmlObj);
 
 implementation
 
@@ -24,7 +25,6 @@ uses
 //--------------------------------------------------------------------------------------------
 
 procedure GetIENTemplate(AppState: TAppState; TemplateIEN: string; SL : TStringList);  forward;
-procedure GenerateNote(AppState : TAppState; AFlowsheet : TOneFlowsheet; TemplateIEN : string; HTMLObj: THtmlObj); forward;
 procedure ResolveDataFields(AppState: TAppState; AFlowsheet : TOneFlowsheet; var Str : string);                    forward;
 function  DataValue(AppState : TAppState; AFlowsheet : TOneFlowsheet; Field : string) : string;                    forward;
 function  GetHelpText(AppState : TAppState; AFlowsheet : TOneFlowsheet): string;                                                       forward;
@@ -91,8 +91,8 @@ begin
     else if Field = '%TAB2STRENGTH%'            then Result := AFlowsheet.PillStrength2 //Tab2Strength
     else if Field = '%WARFARINSTARTDATE%'       then Result := Patient.StartDate
 
-    else if Field = '%DOCSHOLDNUMOFDAYS%'       then Result := AFlowsheet.DocsHoldNumOfDays
-    else if Field = '%DOCSTAKENUMTABSTODAY%'    then Result := AFlowsheet.DocsTakeNumTabsToday
+    else if Field = '%DOSEHOLDNUMOFDAYS%'       then Result := AFlowsheet.DoseHoldNumOfDays  //NOTICE -- Changed.  Was %DOCSHOLDNUMOFDAYS%
+    else if Field = '%DOSETAKENUMMGTODAY%'      then Result := AFlowsheet.DoseTakeNumMgToday  //NOTICE -- CHANGED. Was %DOCSTAKENUMTABSTODAY%
     else if Field = '%DOCSPTMOVEDAWAY%'         then Result := BOOL_0or1[AFlowsheet.DocsPtMoved]
     else if Field = '%DOCSPTTRANSFERTO%'        then Result := AFlowsheet.DocsPtTransferTo
     else if Field = '%DOCSPTVIOLATEAGREEMENT%'  then Result := BOOL_0or1[Patient.ViolatedAgreement]
@@ -144,18 +144,15 @@ begin GetTemplateText(TemplateIEN, AppState.Patient.DFN, '', SL); end;
 
 procedure GenerateNote(AppState : TAppState; AFlowsheet : TOneFlowsheet; TemplateIEN : string; HTMLObj: THtmlObj);
 //NOTE: ScreenToDataRec(AppData.DosingData) <-- should be called upstream of this so data is current
-var SL : TStringList;
-    Text : string;
+var Text : string;
 begin
-  SL := TStringList.Create();
-  GetIENTemplate(AppState, TemplateIEN, SL);
-  Text := SL.Text;
+  GetIENTemplate(AppState, TemplateIEN, AppState.NoteInfo.NoteSL);
+  Text := AppState.NoteInfo.NoteSL.Text;
   ResolveDataFields(AppState, AFlowsheet, Text);
   Text := StringReplace(Text, #$D#$A,'', [rfReplaceAll]);
   ParseIfBlocks(Text);
-  SL.Text := Text;
-  SLToHTML(SL, HTMLObj, true);    //put into HTMLObj.  true --> erase prior
-  SL.Free;
+  AppState.NoteInfo.NoteSL.Text := Text;
+  SLToHTML(AppState.NoteInfo.NoteSL, HTMLObj, true);    //put into HTMLObj.  true --> erase prior
 end;
 
 procedure GenerateIntakeNote(AppState :TAppState; AFlowsheet : TOneFlowsheet; HTMLObj: THtmlObj);
@@ -231,8 +228,8 @@ begin
     '<tr><td>&#37;TABSTRENGTH&#37;</td>'+            '<td>%TABSTRENGTH%</td></tr>'+
     '<tr><td>&#37;TAB2STRENGTH&#37;</td>'+           '<td>%TAB2STRENGTH%</td></tr>'+
     '<tr><td>&#37;WARFARINSTARTDATE&#37;</td>'+      '<td>%WARFARINSTARTDATE%</td></tr>'+
-    '<tr><td>&#37;DOCSHOLDNUMOFDAYS&#37;</td>'+      '<td>%DOCSHOLDNUMOFDAYS%</td></tr>'+
-    '<tr><td>&#37;DOCSTAKENUMTABSTODAY&#37;</td>'+   '<td>%DOCSTAKENUMTABSTODAY%</td></tr>'+
+    '<tr><td>&#37;DOSEHOLDNUMOFDAYS&#37;</td>'+      '<td>%DOSEHOLDNUMOFDAYS%</td></tr>'+
+    '<tr><td>&#37;DOSETAKENUMMGSTODAY&#37;</td>'+    '<td>%DOSETAKENUMMGSTODAY%</td></tr>'+
     '<tr><td>&#37;DOCSPTMOVEDAWAY&#37;</td>'+        '<td>%DOCSPTMOVEDAWAY%</td></tr>'+
     '<tr><td>&#37;DOCSPTTRANSFERTO&#37;</td>'+       '<td>%DOCSPTTRANSFERTO%</td></tr>'+
     '<tr><td>&#37;DOCSPTVIOLATEAGREEMENT&#37;</td>'+ '<td>%DOCSPTVIOLATEAGREEMENT%</td></tr>'+

@@ -1,11 +1,12 @@
 unit fEndAnticoagMgmt;
+//DEPRECIATED... DELETE LATER
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, grids,
   StdCtrls, StrUtils, Math, DateUtils, rRPCs, fCosign,
-  ORCtrls, ORFn, ORNet, Trpcb, uTypes, VA508AccessibilityManager,
+  ORCtrls, ORFn, ORNet, Trpcb, uTypes, {VA508AccessibilityManager,}
   uHTMLTools, TMGHTML2, ComCtrls, ExtCtrls;
 
 type

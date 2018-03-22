@@ -8,20 +8,25 @@ uses
 
 type
   TfrmSignItem = class(TForm)
-    txtESCode: TCaptionEdit;
+    txtESCode: TEdit;   //Was TCaptionEdit with Caption = 'Signature Code'
     lblESCode: TLabel;
     cmdOK: TButton;
     cmdCancel: TButton;
-    lblText: TMemo;   //kt added
+    lblText: TMemo;
+    ckbAddCosigner: TCheckBox;   //kt added
     procedure cmdOKClick(Sender: TObject);
     procedure cmdCancelClick(Sender: TObject);
   private
-    FESCode: string;
+    function GetCosignerWanted : boolean;
+    procedure Initialize(AText, ACaption: string);
   public
+    ESCode: string;
     { Public declarations }
+    function ShowModal(AText, ACaption: string) : integer;  overload;
+    property CosignerWanted : boolean read GetCosignerWanted;
   end;
 
-procedure SignatureForItem(FontSize: Integer; const AText, ACaption: string; var ESCode: string);
+procedure SignatureForItem(FontSize: Integer; const AText, ACaption: string; var VESCode: string);
 
 implementation
 
@@ -34,7 +39,7 @@ const
   TX_INVAL_CAP = 'Unrecognized Signature Code';
 
 
-procedure SignatureForItem(FontSize: Integer; const AText, ACaption: string; var ESCode: string);
+procedure SignatureForItem(FontSize: Integer; const AText, ACaption: string; var VESCode: string);
 var
   frmSignItem: TfrmSignItem;
 begin
@@ -42,12 +47,12 @@ begin
   try
     ResizeAnchoredFormToFont(frmSignItem);
     with frmSignItem do begin
-      FESCode := '';
+      ESCode := '';
       Caption := ACaption;
       lblText.Text := AText;
       txtESCode.Text := '';
       ShowModal;
-      ESCode := FESCode;
+      VESCode := ESCode;
     end;
   finally
     frmSignItem.Release;
@@ -56,22 +61,44 @@ end;
 
 procedure TfrmSignItem.cmdOKClick(Sender: TObject);
 begin
-  if not ValidESCode(txtESCode.Text) then
-  begin
+  if not ValidESCode(txtESCode.Text) then begin
     InfoBox(TX_INVAL_MSG, TX_INVAL_CAP, MB_OK);
     txtESCode.SetFocus;
     txtESCode.SelectAll;
     Exit;
   end;
-  FESCode := Encrypt(txtESCode.Text);
-  Close;
+  ESCode := Encrypt(txtESCode.Text);
+  ModalResult := mrOK; //will effect closing form
+  //Close;
 end;
 
 procedure TfrmSignItem.cmdCancelClick(Sender: TObject);
 begin
-  FESCode := '';
-  Close;
+  ESCode := '';
+  ModalResult := mrCancel; //will effect closing form.
+  //Close;
 end;
+
+function TfrmSignItem.GetCosignerWanted : boolean;
+begin
+  Result := ckbAddCosigner.Checked;
+end;
+
+procedure TfrmSignItem.Initialize(AText, ACaption: string);
+begin
+  ESCode := '';
+  lblText.Text := AText;
+  Caption := ACaption;
+  txtESCode.Text := '';
+end;
+
+
+function TfrmSignItem.ShowModal(AText, ACaption: string) : integer;
+begin
+  Initialize(AText, ACaption);
+  Result := ShowModal;
+end;
+
 
 
 

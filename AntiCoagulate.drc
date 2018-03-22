@@ -8,29 +8,29 @@
   resources were bound to the produced executable.
 */
 
-#define Vcl_VDBConsts_SRefreshRecord 65104
-#define Vcl_VDBConsts_SApplyUpdates 65105
-#define Vcl_VDBConsts_SCancelUpdates 65106
-#define Vcl_VDBConsts_SRemoteLogin 65107
-#define Vcl_Imaging_JConsts_sChangeJPGSize 65108
-#define Vcl_Imaging_JConsts_sJPEGError 65109
-#define Vcl_Imaging_JConsts_sJPEGImageFile 65110
-#define Vcl_OleConst_SInvalidLicense 65120
-#define Vcl_OleConst_SNotLicensed 65121
-#define Vcl_OleConst_sNoRunningObject 65122
-#define Data_DBConsts_SBcdOverflow 65123
-#define Data_DBConsts_SInvalidBcdValue 65124
-#define Data_DBConsts_SCouldNotParseTimeStamp 65125
-#define Data_DBConsts_SInvalidSqlTimeStamp 65126
-#define Vcl_VDBConsts_SFirstRecord 65127
-#define Vcl_VDBConsts_SPriorRecord 65128
-#define Vcl_VDBConsts_SNextRecord 65129
-#define Vcl_VDBConsts_SLastRecord 65130
-#define Vcl_VDBConsts_SInsertRecord 65131
-#define Vcl_VDBConsts_SDeleteRecord 65132
-#define Vcl_VDBConsts_SEditRecord 65133
-#define Vcl_VDBConsts_SPostEdit 65134
-#define Vcl_VDBConsts_SCancelEdit 65135
+#define Vcl_VDBConsts_SEditRecord 65104
+#define Vcl_VDBConsts_SPostEdit 65105
+#define Vcl_VDBConsts_SCancelEdit 65106
+#define Vcl_VDBConsts_SRefreshRecord 65107
+#define Vcl_VDBConsts_SApplyUpdates 65108
+#define Vcl_VDBConsts_SCancelUpdates 65109
+#define Vcl_VDBConsts_SRemoteLogin 65110
+#define Vcl_OleConst_SBadPropValue 65120
+#define Vcl_OleConst_SCannotActivate 65121
+#define Vcl_OleConst_SNoWindowHandle 65122
+#define Vcl_OleConst_SInvalidLicense 65123
+#define Vcl_OleConst_SNotLicensed 65124
+#define Vcl_OleConst_sNoRunningObject 65125
+#define Data_DBConsts_SBcdOverflow 65126
+#define Data_DBConsts_SInvalidBcdValue 65127
+#define Data_DBConsts_SCouldNotParseTimeStamp 65128
+#define Data_DBConsts_SInvalidSqlTimeStamp 65129
+#define Vcl_VDBConsts_SFirstRecord 65130
+#define Vcl_VDBConsts_SPriorRecord 65131
+#define Vcl_VDBConsts_SNextRecord 65132
+#define Vcl_VDBConsts_SLastRecord 65133
+#define Vcl_VDBConsts_SInsertRecord 65134
+#define Vcl_VDBConsts_SDeleteRecord 65135
 #define Vcl_ComStrs_sRichEditInsertError 65136
 #define Vcl_ComStrs_sRichEditLoadFail 65137
 #define Vcl_ComStrs_sRichEditSaveFail 65138
@@ -44,9 +44,9 @@
 #define Vcl_ComStrs_sFailSetCalMaxSelRange 65146
 #define Vcl_ComStrs_sFailSetCalMinMaxRange 65147
 #define Vcl_ComStrs_sFailsetCalSelRange 65148
-#define Vcl_OleConst_SBadPropValue 65149
-#define Vcl_OleConst_SCannotActivate 65150
-#define Vcl_OleConst_SNoWindowHandle 65151
+#define Vcl_Imaging_JConsts_sChangeJPGSize 65149
+#define Vcl_Imaging_JConsts_sJPEGError 65150
+#define Vcl_Imaging_JConsts_sJPEGImageFile 65151
 #define System_Win_ComConst_SNoMethod 65152
 #define System_Win_ComConst_SVarNotObject 65153
 #define System_Win_ComConst_STooManyParams 65154
@@ -433,13 +433,16 @@
 #define System_SysConst_SDivByZero 65535
 STRINGTABLE
 BEGIN
+	Vcl_VDBConsts_SEditRecord,	L"Edit record"
+	Vcl_VDBConsts_SPostEdit,	L"Post edit"
+	Vcl_VDBConsts_SCancelEdit,	L"Cancel edit"
 	Vcl_VDBConsts_SRefreshRecord,	L"Refresh data"
 	Vcl_VDBConsts_SApplyUpdates,	L"Apply updates"
 	Vcl_VDBConsts_SCancelUpdates,	L"Cancel updates"
 	Vcl_VDBConsts_SRemoteLogin,	L"Remote Login"
-	Vcl_Imaging_JConsts_sChangeJPGSize,	L"Cannot change the size of a JPEG image"
-	Vcl_Imaging_JConsts_sJPEGError,	L"JPEG error #%d"
-	Vcl_Imaging_JConsts_sJPEGImageFile,	L"JPEG Image File"
+	Vcl_OleConst_SBadPropValue,	L"'%s' is not a valid property value"
+	Vcl_OleConst_SCannotActivate,	L"OLE control activation failed"
+	Vcl_OleConst_SNoWindowHandle,	L"Could not obtain OLE control window handle"
 	Vcl_OleConst_SInvalidLicense,	L"License information for %s is invalid"
 	Vcl_OleConst_SNotLicensed,	L"License information for %s not found. You cannot use this control in design mode"
 	Vcl_OleConst_sNoRunningObject,	L"Unable to retrieve a pointer to a running object registered with OLE for %s/%s"
@@ -453,9 +456,6 @@ BEGIN
 	Vcl_VDBConsts_SLastRecord,	L"Last record"
 	Vcl_VDBConsts_SInsertRecord,	L"Insert record"
 	Vcl_VDBConsts_SDeleteRecord,	L"Delete record"
-	Vcl_VDBConsts_SEditRecord,	L"Edit record"
-	Vcl_VDBConsts_SPostEdit,	L"Post edit"
-	Vcl_VDBConsts_SCancelEdit,	L"Cancel edit"
 	Vcl_ComStrs_sRichEditInsertError,	L"RichEdit line insertion error"
 	Vcl_ComStrs_sRichEditLoadFail,	L"Failed to Load Stream"
 	Vcl_ComStrs_sRichEditSaveFail,	L"Failed to Save Stream"
@@ -469,9 +469,9 @@ BEGIN
 	Vcl_ComStrs_sFailSetCalMaxSelRange,	L"Failed to set maximum selection range"
 	Vcl_ComStrs_sFailSetCalMinMaxRange,	L"Failed to set calendar min/max range"
 	Vcl_ComStrs_sFailsetCalSelRange,	L"Failed to set calendar selected range"
-	Vcl_OleConst_SBadPropValue,	L"'%s' is not a valid property value"
-	Vcl_OleConst_SCannotActivate,	L"OLE control activation failed"
-	Vcl_OleConst_SNoWindowHandle,	L"Could not obtain OLE control window handle"
+	Vcl_Imaging_JConsts_sChangeJPGSize,	L"Cannot change the size of a JPEG image"
+	Vcl_Imaging_JConsts_sJPEGError,	L"JPEG error #%d"
+	Vcl_Imaging_JConsts_sJPEGImageFile,	L"JPEG Image File"
 	System_Win_ComConst_SNoMethod,	L"Method '%s' not supported by automation object"
 	System_Win_ComConst_SVarNotObject,	L"Variant does not reference an automation object"
 	System_Win_ComConst_STooManyParams,	L"Dispatch methods do not support more than 64 parameters"
@@ -860,13 +860,9 @@ END
 
 /* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\Controls.res */
 /* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\Buttons.res */
-/* P:\vista\AMT_AnticoagMgmtTool\BS\ORCTRLS.RES */
 /* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\TeeFonts.res */
 /* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\TeeResou.res */
-/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\Vcl.DBLogDlg.dfm */
-/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\Vcl.DBPWDlg.dfm */
-/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\DBCtrls.res */
-/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\DBGrids.res */
+/* P:\vista\AMT_AnticoagMgmtTool\BS\ORCTRLS.RES */
 /* P:\vista\AMT_AnticoagMgmtTool\fAboutACM.DFM */
 /* P:\vista\AMT_AnticoagMgmtTool\fSplash.DFM */
 /* C:\SourceCode\XWB_1_1_P65_scrubbed\BDK32\Source\XWBSSOi.dfm */
@@ -886,6 +882,10 @@ END
 /* C:\SourceCode\XWB_1_1_P65_scrubbed\BDK32\Source\fSSHUsername.DFM */
 /* P:\vista\AMT_AnticoagMgmtTool\mVisitRelated.DFM */
 /* P:\vista\AMT_AnticoagMgmtTool\fPCE.dfm */
+/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\Vcl.DBLogDlg.dfm */
+/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\Vcl.DBPWDlg.dfm */
+/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\DBCtrls.res */
+/* c:\program files\embarcadero\rad studio\12.0\lib\Win32\release\DBGrids.res */
 /* P:\vista\AMT_AnticoagMgmtTool\fxBroker.DFM */
 /* P:\vista\AMT_AnticoagMgmtTool\fTimeout.DFM */
 /* P:\vista\AMT_AnticoagMgmtTool\fBridgeCommentsDialog.dfm */
@@ -895,9 +895,9 @@ END
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fMemoEdit.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\fCosign.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fActivityDetail.dfm */
-/* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompletedVisitLetter.dfm */
-/* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompleteConsult.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fSignItem.DFM */
+/* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompleteConsult.dfm */
+/* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCompletedVisitNote.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEditComplications.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\fEditFlowsheet.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fCustomINRGoal.dfm */
@@ -905,12 +905,14 @@ END
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fNewIndication.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fUnlockPatient.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fOutsideLab.dfm */
+/* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fDischargeInfo.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fPatientInformation.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fStartAnticoagMgmt.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fReminder.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fMissedAppt.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fEndAnticoagMgmt.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fViewFlowsheetGrid.dfm */
+/* P:\vista\AMT_AnticoagMgmtTool\TMGExtra\fAMTEditMemo.dfm */
 /* P:\vista\AMT_AnticoagMgmtTool\fAnticoagulator.DFM */
 /* P:\vista\AMT_AnticoagMgmtTool\AntiCoagulate.RES */
 /* P:\vista\AMT_AnticoagMgmtTool\AntiCoagulate.drf */

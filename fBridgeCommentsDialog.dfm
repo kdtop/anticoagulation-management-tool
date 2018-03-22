@@ -78,16 +78,12 @@ object frmBridgeCommentDlg: TfrmBridgeCommentDlg
     BevelOuter = bvNone
     Padding.Left = 10
     TabOrder = 0
-    object lblEnterComments: TVA508StaticText
-      Name = 'lblEnterComments'
-      Left = 8
-      Top = 4
-      Width = 85
-      Height = 15
-      Alignment = taLeftJustify
-      Caption = 'Enter Comments:'
-      TabOrder = 0
-      ShowAccelChar = True
+    object lblEnterComments: TLabel
+      Left = 2
+      Top = 8
+      Width = 79
+      Height = 13
+      Caption = 'Enter Comments'
     end
   end
 end

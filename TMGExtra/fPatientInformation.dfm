@@ -15,6 +15,9 @@ object frmPatientInformation: TfrmPatientInformation
   Position = poMainFormCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    598
+    388)
   PixelsPerInch = 96
   TextHeight = 13
   object gbxUpdate: TGroupBox
@@ -83,8 +86,8 @@ object frmPatientInformation: TfrmPatientInformation
     end
     object ckbBridging: TCheckBox
       Left = 32
-      Top = 37
-      Width = 150
+      Top = 35
+      Width = 160
       Height = 17
       Hint = 
         'Patient is eligible for perioperative Low Molecular Weight Hepar' +
@@ -175,7 +178,7 @@ object frmPatientInformation: TfrmPatientInformation
       Width = 261
       Height = 21
       Caption = ':'
-      TabOrder = 16
+      TabOrder = 15
       object lblLevelOfComplexity: TLabel
         Left = 4
         Top = 4
@@ -210,7 +213,7 @@ object frmPatientInformation: TfrmPatientInformation
     end
     object ckbSA: TCheckBox
       Left = 196
-      Top = 21
+      Top = 17
       Width = 110
       Height = 17
       Caption = 'Signed Agreement'
@@ -223,18 +226,9 @@ object frmPatientInformation: TfrmPatientInformation
       Width = 97
       Height = 17
       Caption = 'Undetermined'
-      TabOrder = 15
+      TabOrder = 14
       Visible = False
       OnClick = ckbNoStopClick
-    end
-    object ckbDCFromClinic: TCheckBox
-      Left = 392
-      Top = 248
-      Width = 93
-      Height = 21
-      Caption = 'd/c from clinic'
-      TabOrder = 14
-      OnClick = ckbDCFromClinicClick
     end
     object btnSExit: TButton
       Left = 410
@@ -245,7 +239,7 @@ object frmPatientInformation: TfrmPatientInformation
       Caption = '&Save/Exit'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 17
+      TabOrder = 16
       Visible = False
       OnClick = btnSExitClick
     end
@@ -345,7 +339,7 @@ object frmPatientInformation: TfrmPatientInformation
     object edtStop: TEdit
       Left = 296
       Top = 248
-      Width = 80
+      Width = 84
       Height = 21
       Hint = 'Enter the date of discharge from the Anticoagulation Clinic'
       Color = cl3DLight
@@ -391,11 +385,12 @@ object frmPatientInformation: TfrmPatientInformation
     end
     object btnEditBridgingComments: TButton
       Left = 195
-      Top = 38
+      Top = 35
       Width = 162
-      Height = 18
-      Caption = '&View/Edit Bridging Comments'
-      TabOrder = 18
+      Height = 20
+      Caption = '&View / Edit Bridging Comments'
+      TabOrder = 17
+      Visible = False
       OnClick = btnEditBridgingCommentsClick
     end
   end
@@ -470,5 +465,42 @@ object frmPatientInformation: TfrmPatientInformation
       00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
     ModalResult = 2
     TabOrder = 2
+  end
+  object btnDischargeFromClinic: TBitBtn
+    Left = 8
+    Top = 355
+    Width = 177
+    Height = 25
+    Anchors = [akBottom]
+    Caption = '&Discharge From Clinic'
+    Glyph.Data = {
+      36030000424D3603000000000000360000002800000010000000100000000100
+      18000000000000030000120B0000120B00000000000000000000FFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFDAE0FAD8DFFAFFFFFFFFFFFFFFFFFFD9DFFAE9ECFCFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFBAC7F7143CE25875E9FFFFFFFFFFFFFFFFFF
+      1B43E1294EE3D9E0FAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAEBDF6123D
+      E44465E9EDF0FDFFFFFFFFFFFFFFFFFF4363E60833DE1A42E2E5E9FCFFFFFFFF
+      FFFFFFFFFFFFFFFFAFBDF70633E5244CE6EDF1FDFFFFFFFFFFFFFFFFFFFFFFFF
+      F3F5FD728AED0632E1234AE7CED7FAFFFFFFFFFFFF92A6F5153FE8244DE8E7EB
+      FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFCFF8399F10C38E7274FEBD3
+      DBFBACBCF90D3AEB2B51EBE6EAFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFACBBF70C39EB0735EC0534EC103CEBE2E7FCFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5C7AF405
+      34EE0434EFADBDF9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFCFDFF8BA1F90434F01C47F12952F41E49F5DAE2FEFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6A87F80636F31C47F1E1
+      E6FDF2F5FE4065F82650FAF3F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      F9FAFF7C95FB0434F41844F4CBD5FCFFFFFFFFFFFFF3F5FF6785FC2C56FBE9ED
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5E7EFB0335F7133FF5DAE1FDFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFF7F98FD1442FBEBEFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      0637F91241F7C8D2FDFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFDFFBFCC
+      FEDEE5FEFFFFFFFFFFFFFFFFFFFFFFFF6A87FBB2C1FDFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    TabOrder = 3
+    OnClick = btnDischargeFromClinicClick
   end
 end

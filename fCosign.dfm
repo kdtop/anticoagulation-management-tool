@@ -26,7 +26,6 @@ object frmCosign: TfrmCosign
     BevelOuter = bvNone
     Color = clGradientActiveCaption
     TabOrder = 0
-    ExplicitHeight = 208
     object pnlButtons: TPanel
       Left = 0
       Top = 171
@@ -35,7 +34,6 @@ object frmCosign: TfrmCosign
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitTop = 167
       object btnCancel: TBitBtn
         Left = 152
         Top = 10
@@ -107,6 +105,7 @@ object frmCosign: TfrmCosign
           FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
           FFFF00FFFF00FF3EB961FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
           00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
+        ModalResult = 1
         TabOrder = 1
         OnClick = btnOKClick
       end
@@ -150,7 +149,7 @@ object frmCosign: TfrmCosign
         Left = 0
         Top = 21
         Width = 354
-        Height = 129
+        Height = 125
         Align = alClient
         ItemHeight = 13
         ScrollWidth = 1
@@ -159,35 +158,7 @@ object frmCosign: TfrmCosign
       end
     end
   end
-  object AccessibilityManager: TVA508AccessibilityManager
-    Left = 8
-    Top = 174
-    Data = (
-      (
-        'Component = frmCosign'
-        'Status = stsDefault')
-      (
-        'Component = pnlButtons'
-        'Status = stsDefault')
-      (
-        'Component = edtCoSign'
-        'Text = Enter the co-signer'#39's name'
-        'Status = stsOK')
-      (
-        'Component = pnlList'
-        'Status = stsDefault')
-      (
-        'Component = lbCoSign'
-        'Status = stsDefault')
-      (
-        'Component = btnCancel'
-        'Status = stsDefault')
-      (
-        'Component = btnOK'
-        'Status = stsDefault'))
-  end
   object Timer: TTimer
-    Enabled = False
     Interval = 300
     OnTimer = TimerTimer
     Left = 64

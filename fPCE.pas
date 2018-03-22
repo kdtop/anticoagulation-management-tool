@@ -4,14 +4,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ORFn, VA508AccessibilityManager, ExtCtrls, mPCE,
+  Dialogs, StdCtrls, ORFn, {VA508AccessibilityManager,} ExtCtrls, mPCE,
   mVisitRelated;
 
 type
   TfrmPCE = class(TForm)
     btnCancel: TButton;
     btnOK: TButton;
-    amPCE: TVA508AccessibilityManager;
     pnlButtons: TPanel;
     pnlVisit: TPanel;
     fraVisitRelated: TfraVisitRelated;
@@ -33,7 +32,7 @@ var
 
 implementation
 
-uses VA508AccessibilityRouter;
+//uses VA508AccessibilityRouter;
 {$R *.dfm}
 
 
@@ -115,11 +114,13 @@ end;
 
 procedure TfrmPCE.FormShow(Sender: TObject);
 begin
+  {
   if ScreenReaderSystemActive then
   begin
     memSvcConn.SetFocus;
   end
   else
+  }
     fraVisitRelated.SetFocus;
 end;
 

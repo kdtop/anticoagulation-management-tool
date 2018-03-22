@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Dialogs, grids,
   StdCtrls, StrUtils, Math, DateUtils, ComCtrls, ExtCtrls, graphics,
-  ORCtrls, ORFn, ORNet, Trpcb, VA508AccessibilityManager, mPCE,
+  ORCtrls, ORFn, ORNet, Trpcb, {VA508AccessibilityManager,} mPCE,
   uHTMLTools, TMGHTML2, uPastINRs;
 
 type
@@ -107,20 +107,22 @@ type
     NewINREntered            : boolean;
     DosingEdited             : boolean;
     // ---------------------
-    DocsTakeNumTabsToday     : string;
-    DocsHoldNumOfDays        : string;
+    DoseTakeNumMgToday       : string;
+    DoseHoldNumOfDays        : string;
     DocsPtMoved              : boolean;
     DocsPtTransferTo         : string;
-    PatientInstructions             : TStringList;
+    //DocsHTMLSL               : TStringList;
+    PatientInstructions      : TStringList;
+
 
     //Below are duplicates of data found in TPatient and TAppSate
     //But they are also used for creating documentation for a single flowsheet event, and are
     //  store in flowsheet.  So I need fields here to hold that data
     //**Don't use these as primary data sources.  Use the fields in TPatient and TAppsate.
     DocsAppointmentNoShowDate : TDateTime;
-    DocsViolatedAgreement    : Boolean;
-    DocsDischargedReason     : string;
-    DocsDischargedDate       : TDateTime;
+    DocsViolatedAgreement     : Boolean;
+    DocsDischargedReason      : string;
+    DocsDischargedDate        : TDateTime;
 
     constructor Create;
     destructor Destroy; override;
@@ -223,10 +225,10 @@ uses
 constructor TOneFlowsheet.Create;
 begin
   inherited Create;
-  Comments := TStringList.Create;
-  Complications := TStringList.Create;
+  Comments            := TStringList.Create;
+  Complications       := TStringList.Create;
   PatientInstructions := TStringList.Create;
-
+  //DocsHTMLSL          := TStringList.Create;
   //kt OnePastINRValue := TOnePastINRValue.Create;
   Clear;
 end;
@@ -266,10 +268,11 @@ begin
   NewINREntered                                     := false;
   DosingEdited                                      := false;
   //--------------------------
-  DocsTakeNumTabsToday                              := '';
-  DocsHoldNumOfDays                                 := '';
+  DoseTakeNumMgToday                                := '';
+  DoseHoldNumOfDays                                 := '';
   DocsPtMoved                                       := false;
   DocsPtTransferTo                                  := '';
+  //DocsHTMLSL.Clear;
   PatientInstructions.Clear;
   DocsAppointmentNoShowDate                         := 0;
   DocsViolatedAgreement                             := false;
@@ -420,11 +423,14 @@ begin
   NewINREntered             := Source.NewINREntered;
   DosingEdited              := Source.DosingEdited;
   //---------------------
-  DocsTakeNumTabsToday      := Source.DocsTakeNumTabsToday;
-  DocsHoldNumOfDays         := Source.DocsHoldNumOfDays;
+  DoseTakeNumMgToday        := Source.DoseTakeNumMgToday;
+  DoseHoldNumOfDays         := Source.DoseHoldNumOfDays;
   DocsPtMoved               := Source.DocsPtMoved;
   DocsPtTransferTo          := Source.DocsPtTransferTo;
+
   PatientInstructions.Assign(Source.PatientInstructions);
+  //DocsHTMLSL.Assign(Source.DocsHTMLSL);
+
   DocsAppointmentNoShowDate := Source.DocsAppointmentNoShowDate;
   DocsViolatedAgreement     := Source.DocsViolatedAgreement;
   DocsDischargedReason      := Source.DocsDischargedReason;
@@ -484,15 +490,17 @@ begin
   if PriorTWD                  <> Other.PriorTWD then exit;
   if NewINREntered             <> Other.NewINREntered then exit;
   if DosingEdited              <> Other.DosingEdited then exit;
-  if DocsTakeNumTabsToday      <> Other.DocsTakeNumTabsToday then exit;
-  if DocsHoldNumOfDays         <> Other.DocsHoldNumOfDays then exit;
+  if DoseTakeNumMgToday        <> Other.DoseTakeNumMgToday then exit;
+  if DoseHoldNumOfDays         <> Other.DoseHoldNumOfDays then exit;
   if DocsPtMoved               <> Other.DocsPtMoved then exit;
   if DocsPtTransferTo          <> Other.DocsPtTransferTo then exit;
+
   if DocsAppointmentNoShowDate <> Other.DocsAppointmentNoShowDate then exit;
   if DocsViolatedAgreement     <> Other.DocsViolatedAgreement then exit;
   if DocsDischargedReason      <> Other.DocsDischargedReason then exit;
   if DocsDischargedDate        <> Other.DocsDischargedDate then exit;
   if not EqualSL(PatientInstructions, Other.PatientInstructions) then exit;
+  //if not EqualSL(DocsHTMLSL, Other.DocsHTMLSL) then exit;
   if not EqualSL(Comments, Other.Comments) then exit;
   if not EqualSL(Complications, Other.Complications) then exit;
   Result := true; //true if we passed all the tests above.
@@ -1039,6 +1047,7 @@ begin
   Comments.Free;
   Complications.Free;
   PatientInstructions.Free;
+  //DocsHTMLSL.Free;
   //kt OnePastINRValue.Free;
   inherited Destroy;
 end;
@@ -1307,14 +1316,16 @@ procedure TPatientFlowsheetData.ParsePatientData(DFN : string; RPCResults : TStr
     end;
 
     OneFlowsheet.DosingEdited              :=(piece(TMGNode,'^',1) = 'Y');
-    OneFlowsheet.DocsHoldNumOfDays         := piece(TMGNode,'^',2);
-    OneFlowsheet.DocsTakeNumTabsToday      := piece(TMGNode,'^',3);
+    OneFlowsheet.DoseHoldNumOfDays         := piece(TMGNode,'^',2);
+    OneFlowsheet.DoseTakeNumMgToday        := piece(TMGNode,'^',3);
     OneFlowsheet.DocsAppointmentNoShowDate := FMDTStrToDateTime(piece(TMGNode,'^',4));
     OneFlowsheet.DocsPtMoved               :=(piece(TMGNode,'^',5) = 'Y');
     OneFlowsheet.DocsPtTransferTo          := piece(TMGNode,'^',6);
     OneFlowsheet.DocsViolatedAgreement     :=(piece(TMGNode,'^',7) = 'Y');
     OneFlowsheet.DocsDischargedReason      := piece(TMGNode,'^',8);
     OneFlowsheet.DocsDischargedDate        := FMDTStrToDateTime(piece(TMGNode,'^',9));
+
+    //Note:  OneFlowsheet.DocsHTMLNote will be saved as TIU NOTE, not with flowsheet data.
 
     {
     //OneFlowsheet.OutINR := '^';

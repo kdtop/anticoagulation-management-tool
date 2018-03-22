@@ -60,11 +60,9 @@ end;
 procedure InitTimeOut(AUserCondition: TACTimeoutTimerCondition;
                       AUserAction: TACTimeoutTimerAction);
 begin
-  if(not assigned(timTimeout)) then
-  begin
+  if(not assigned(timTimeout)) then begin
     timTimeOut := TACTimeoutTimer.Create(Application);
-    with timTimeOut do
-    begin
+    with timTimeOut do begin
       OnTimer := timTimeoutTimer;
       FUserCondition := AUserCondition;
       FUserAction := AUserAction;

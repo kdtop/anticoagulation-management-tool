@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, VA508AccessibilityManager, VA508AccessibilityRouter, jpeg;
+  ExtCtrls, StdCtrls, {VA508AccessibilityManager, VA508AccessibilityRouter,} jpeg;
 
 type
   TfrmSplashACM = class(TForm)
@@ -13,9 +13,7 @@ type
     lblCopyright: TStaticText;
     pnlImage: TPanel;
     imgSplash: TImage;
-    memDisclaimer: TMemo;
     lblSplash: TStaticText;
-    amSplash: TVA508AccessibilityManager;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -42,7 +40,7 @@ begin
   ver := FileVersionValue(Application.ExeName, FILE_VER_FILEVERSION);
   lblVersion.Caption := 'version ' + ver;
   lblVersion.Invalidate;
-  amSplash.AccessText[lblSplash] := amSplash.AccessText[lblSplash] + ' version ' + ver;
+  //amSplash.AccessText[lblSplash] := amSplash.AccessText[lblSplash] + ' version ' + ver;
   lblSplash.Invalidate;
 end;
 
@@ -67,6 +65,6 @@ begin
 end;
 
 initialization
-  SpecifyFormIsNotADialog(TfrmSplashACM);
+  //SpecifyFormIsNotADialog(TfrmSplashACM);
 
 end.

@@ -208,6 +208,7 @@ implementation  // -------------------------------------------------------------
 
 uses
   StrUtils, Math,  //kt 8/09
+  VCLTee.TeEngine, //kt 3/18
   ORCtrls, Grids, Chart, CheckLst, VAUtils;
 
 const
@@ -651,7 +652,7 @@ var
   ch : WideChar;
 begin
   Result := '';
-  for i := 1 to Length(x) do
+  for i := 1 to Length(x) do begin
     ch := x[i];
     case ch of
             #9: for j := 1 to (ATabWidth - (Length(Result) mod ATabWidth)) do
@@ -662,6 +663,7 @@ begin
   #10,#13,#160: Result := Result + ' ';
     #161..#255: Result := Result + x[i];
     end;
+  end;
   if Copy(Result, Length(Result), 1) = ' ' then Result := TrimRight(Result) + ' ';
 end;
 
