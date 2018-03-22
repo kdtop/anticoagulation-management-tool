@@ -28,8 +28,8 @@ type
     property NoteNumber : string read FNoteNumber;
   end;
 
-var
-  frmCompleteConsult: TfrmCompleteConsult;
+//var
+//  frmCompleteConsult: TfrmCompleteConsult;
 
 function CompleteConsult(Parameters : TParameters; var NoteNumber : string; DUZ, DFN : string): String;
 
@@ -41,17 +41,27 @@ uses
   rRPCs;
 
 function CompleteConsult(Parameters : TParameters; var NoteNumber : string; DUZ, DFN : string): String;
+var
+  frmCompleteConsult: TfrmCompleteConsult;
+
 begin
   //if ConsultCtrl = 0 then exit;
-  frmCompleteConsult.Initialize(Parameters, NoteNumber, DUZ, DFN);
-  if frmCompleteConsult.lbxConsult.Count > 0 then begin
-    if InfoBox('There are pending anticoagulation consults.' + CRLF +
-               'Do you want to resolve with the same note?',
-               'Pending Consult(s)', MB_YESNO or MB_ICONQUESTION) <> mrYes then exit;
-    frmCompleteConsult.ShowModal;
-    NoteNumber := frmCompleteConsult.NoteNumber;
+  frmCompleteConsult := TfrmCompleteConsult.Create(Application);
+  try
+    frmCompleteConsult.Initialize(Parameters, NoteNumber, DUZ, DFN);
+    if frmCompleteConsult.lbxConsult.Count > 0 then begin
+      if InfoBox('There are pending anticoagulation consults.' + CRLF +
+                 'Do you want to resolve with the same note?',
+                 'Pending Consult(s)', MB_YESNO or MB_ICONQUESTION) <> mrYes then exit;
+      frmCompleteConsult.ShowModal;
+      NoteNumber := frmCompleteConsult.NoteNumber;
+    end;
+  finally
+    frmCompleteConsult.Free;
   end;
 end;
+
+//=======================================================================
 
 procedure TfrmCompleteConsult.Initialize(Parameters : TParameters; NoteNumber, DUZ, DFN : string);
 begin
