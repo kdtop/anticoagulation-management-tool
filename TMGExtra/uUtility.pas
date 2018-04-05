@@ -16,6 +16,7 @@ procedure SLToHTML(SL : TStrings; HTMLObj: THtmlObj; ErasePrior : boolean = true
 function  DecDig(InNum: Single): Integer;
 function  TMGFloatToStr(Num : single) : string;
 function  TMGStrToDate(FMExternalDateStr : string) : TDateTime;
+function  TMGTimeToStr(ATime : TTime) : string;
 function  GetControlText(AControl : TObject) : string;
 procedure SetControlText(AControl : TObject; S : string);
 procedure cboSelectByID(cbo : TComboBox; ID : string); overload;
@@ -70,6 +71,17 @@ begin
   Result := Date + Time;
 end;
 
+
+function TMGTimeToStr(ATime : TTime) : string;
+var
+  FormattedTime : string;
+begin
+ //LongTimeFormat := 'h:n';
+ //DateTimeToString(formattedDate, 'tt', ATime);
+ //FormattedTime := FormatDateTime('hh:nn ampm',ATime);
+ Result := FormatDateTime('h:nn ampm',ATime);
+
+end;
 
 function DateCompare(Done1: TDateTime; Done2: TDateTime): tDateCompare;
 //NOTE: this ignores time.

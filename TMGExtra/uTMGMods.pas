@@ -92,7 +92,7 @@ begin
     else if Field = '%WARFARINSTARTDATE%'       then Result := Patient.StartDate
 
     else if Field = '%DOSEHOLDNUMOFDAYS%'       then Result := AFlowsheet.DoseHoldNumOfDays  //NOTICE -- Changed.  Was %DOCSHOLDNUMOFDAYS%
-    else if Field = '%DOSETAKENUMMGTODAY%'      then Result := AFlowsheet.DoseTakeNumMgToday  //NOTICE -- CHANGED. Was %DOCSTAKENUMTABSTODAY%
+    else if Field = '%DOSETAKENUMMGTODAY%'     then Result := AFlowsheet.DoseTakeNumMgToday  //NOTICE -- CHANGED. Was %DOCSTAKENUMTABSTODAY%
     else if Field = '%DOCSPTMOVEDAWAY%'         then Result := BOOL_0or1[AFlowsheet.DocsPtMoved]
     else if Field = '%DOCSPTTRANSFERTO%'        then Result := AFlowsheet.DocsPtTransferTo
     else if Field = '%DOCSPTVIOLATEAGREEMENT%'  then Result := BOOL_0or1[Patient.ViolatedAgreement]
@@ -100,6 +100,7 @@ begin
 
     else if Field = '%NOSHOWDATE%'              then Result := IfThen(AppointmentNoShowDate<>0, DateToStr(AppointmentNoShowDate), '')
     else if Field = '%NEXTAPPT%'                then Result := IfThen(Patient.NextScheduledINRCheckDate<>0, DateToStr(Patient.NextScheduledINRCheckDate), '(none)')
+    else if Field = '%NEXTAPPTTIME%'            then Result := IfThen(Patient.NextScheduledINRCheckTime<>0, TMGTimeToStr(Patient.NextScheduledINRCheckTime), '')
     else if Field = '%TIMENARRTOAPPT%'          then Result := LengthOfTimeNarrToDate(Patient.NextScheduledINRCheckDate)
     else if Field = '%DAYOFWEEKOFAPPT%'         then Result := FormatSettings.LongDayNames[DayOfWeek(Patient.NextScheduledINRCheckDate)]
 
@@ -229,13 +230,14 @@ begin
     '<tr><td>&#37;TAB2STRENGTH&#37;</td>'+           '<td>%TAB2STRENGTH%</td></tr>'+
     '<tr><td>&#37;WARFARINSTARTDATE&#37;</td>'+      '<td>%WARFARINSTARTDATE%</td></tr>'+
     '<tr><td>&#37;DOSEHOLDNUMOFDAYS&#37;</td>'+      '<td>%DOSEHOLDNUMOFDAYS%</td></tr>'+
-    '<tr><td>&#37;DOSETAKENUMMGSTODAY&#37;</td>'+    '<td>%DOSETAKENUMMGSTODAY%</td></tr>'+
+    '<tr><td>&#37;DOSETAKENUMMGTODAY&#37;</td>'+     '<td>%DOSETAKENUMMGTODAY%</td></tr>'+
     '<tr><td>&#37;DOCSPTMOVEDAWAY&#37;</td>'+        '<td>%DOCSPTMOVEDAWAY%</td></tr>'+
     '<tr><td>&#37;DOCSPTTRANSFERTO&#37;</td>'+       '<td>%DOCSPTTRANSFERTO%</td></tr>'+
     '<tr><td>&#37;DOCSPTVIOLATEAGREEMENT&#37;</td>'+ '<td>%DOCSPTVIOLATEAGREEMENT%</td></tr>'+
     '<tr><td>&#37;DOCSCOMMENTS&#37;</td>'+           '<td>%DOCSCOMMENTS%</td></tr>'+
     '<tr><td>&#37;NOSHOWDATE&#37;</td>'+             '<td>%NOSHOWDATE%</td></tr>'+
     '<tr><td>&#37;NEXTAPPT&#37;</td>'+               '<td>%NEXTAPPT%</td></tr>'+
+    '<tr><td>&#37;NEXTAPPTTIME&#37;</td>'+           '<td>%NEXTAPPTTIME%</td></tr>'+
     '<tr><td>&#37;TIMENARRTOAPPT&#37;</td>'+         '<td>%TIMENARRTOAPPT%</td></tr>'+
     '<tr><td>&#37;DAYOFWEEKOFAPPT&#37;</td>'+        '<td>%DAYOFWEEKOFAPPT%</td></tr>'+
     '<tr><td>&#37;HELP&#37;</td>'+                   '<td>(this table)</td></tr>'+

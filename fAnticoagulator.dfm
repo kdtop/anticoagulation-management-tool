@@ -375,8 +375,8 @@ object frmAnticoagulate: TfrmAnticoagulate
       object lblPMsg: TStaticText
         Left = 0
         Top = 0
-        Width = 172
-        Height = 17
+        Width = 390
+        Height = 40
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 0
@@ -525,10 +525,6 @@ object frmAnticoagulate: TfrmAnticoagulate
       HelpKeyword = 'Overview'
       HelpContext = 1000
       Caption = 'Overview'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlTabDemographics: TPanel
         Left = 0
         Top = 0
@@ -898,7 +894,7 @@ object frmAnticoagulate: TfrmAnticoagulate
           end
         end
         object btnViewFlowsheetGrid: TBitBtn
-          Left = 433
+          Left = 553
           Top = 18
           Width = 138
           Height = 25
@@ -954,10 +950,6 @@ object frmAnticoagulate: TfrmAnticoagulate
       HelpContext = 1300
       Caption = 'Enter Information'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlTabEnter: TPanel
         Left = 0
         Top = 0
@@ -2856,10 +2848,6 @@ object frmAnticoagulate: TfrmAnticoagulate
       Caption = 'Exit'
       ImageIndex = 3
       OnShow = tsExitShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlNoDraw: TPanel
         Left = 384
         Top = 2
@@ -3290,10 +3278,6 @@ object frmAnticoagulate: TfrmAnticoagulate
       HelpContext = 1500
       Caption = 'Utilities'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlTabUtilities: TPanel
         Left = 0
         Top = 0

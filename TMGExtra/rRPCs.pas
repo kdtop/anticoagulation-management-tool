@@ -144,6 +144,27 @@ begin
 end;
 
 function MakeNote(AppState : TAppState; TitleIEN : String; Lines : TStrings) : string;
+
+{
+
+[03/27/2018 15:04:50] - In the RPC TIU CREATE RECORD, parameter 9 is "NOASF".
+   It must be currently set to 0. If you set it to 1, it doesn't set the "ASAVE"...
+   which is what causes that message.
+
+PREVIOUS MESSAGE:
+Office:[03/27/2018 13:55:11] - TIU WAS THIS SAVED?
+Called at: 1:53:57 PM
+
+Params ------------------------------------------------------------------
+literal	585631
+
+Results -----------------------------------------------------------------
+0^The author appears to have been disconnected...
+
+Elapsed Time: 1 ms
+
+}
+
 var
   ErrMsg: string;
   NewNoteIEN : int64;
@@ -172,6 +193,8 @@ begin
     Param[6].Value := AppState.EClinic + ';' + AppState.Patient.VisitDate + ';' + AppState.SvcCat;
     Param[7].PType := literal;
     Param[7].Value := '1';  // suppress commit logic
+    Param[8].PType := literal;
+    Param[8].Value := '1';   //NOASF
     CallBroker;
     NewNoteIEN := StrToIntDef(Piece(Results[0], U, 1), 0);
   end;
