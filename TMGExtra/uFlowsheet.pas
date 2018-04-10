@@ -797,29 +797,65 @@ end;
 
 function TOneFlowsheet.GetHumanReadableRegimenCombinedForDay(Day : tDaysOfWeek) : string;
 var FirstIsNonUnity : boolean;
-    NumTab1, NumTab2 : single;
+    fNumTab1, fNumTab2 : single;
+    NumTab1,  NumTab2 : string;
 begin
   Result := '';
-  NumTab1 := GetfNumTabs1ForDay(Day);
+  fNumTab1 := GetfNumTabs1ForDay(Day);
+  NumTab1 :=  GetNumTabs1ForDay(Day);
   FirstIsNonUnity := false;
-  if (NumTab1 <> 1) and (NumTab1 > 0) then begin
-    Result := Result + GetNumTabs1ForDay(Day) + ' tab';
-    if GetfNumTabs1ForDay(Day) <> 1 then Result := Result + 's';
+
+  if fNumTab1>0 then begin
+    if Frac(fNumTab1) = 0.5 then begin
+      Result := Result + IfThen(Trunc(fNumTab1) <> 0, IntToStr(Trunc(fNumTab1)), '')  + '&#189;';
+    end else begin
+      Result := Result + NumTab1;
+    end;
+    Result := Result + ' tab' + IfThen(fNumTab1 > 1, 's', '') + ' of ';
+  end;
+
+
+  {
+  if (fNumTab1 <> 1) and (fNumTab1 > 0) then begin
+    if fNumTab1=0.5 then Result:=Result+'&#189; tab'
+    else begin
+      Result := Result + GetNumTabs1ForDay(Day) + ' tab';
+      if GetfNumTabs1ForDay(Day) <> 1 then Result := Result + 's';
+    end;
     Result := Result + ' of ';
     FirstIsNonUnity := true;
   end;
-  If NumTab1 > 0 then Result := Result + PillStrength1 + ' mg';
+  }
 
-  NumTab2 := GetfNumTabs2ForDay(Day);
-  if UsingTwoPills and (NumTab2 > 0) then begin
+  If fNumTab1 > 0 then Result := Result + PillStrength1 + ' mg';
+
+  fNumTab2 := GetfNumTabs2ForDay(Day);
+  NumTab2 :=  GetNumTabs2ForDay(Day);
+
+  if UsingTwoPills and (fNumTab2 > 0) then begin
+    If Result <> '' then Result := Result + ', and ';
+    if Frac(fNumTab2) = 0.5 then begin
+      Result := Result + IfThen(Trunc(fNumTab2) <> 0, IntToStr(Trunc(fNumTab2)), '')  + '&#189;';
+    end else begin
+      Result := Result + NumTab2;
+    end;
+    Result := Result + ' tab' + IfThen(fNumTab2 > 1, 's', '') + ' of ';
+    Result := Result + PillStrength2 + ' mg';
+  end;
+  {
+  fNumTab2 := GetfNumTabs2ForDay(Day);
+  if UsingTwoPills and (fNumTab2 > 0) then begin
     If Result <> '' then Result := Result + ', and ';
     if (GetfNumTabs2ForDay(Day) <> 1) or (FirstIsNonUnity) then begin
-      Result := Result + GetNumTabs2ForDay(Day) + ' tab';
-      if GetfNumTabs2ForDay(Day) <> 1 then Result := Result + 's';
+      if fNumTab2=0.5 then Result:=Result+'&#189; tab'
+      else begin
+        Result := Result + GetNumTabs2ForDay(Day) + ' tab';
+        if GetfNumTabs2ForDay(Day) <> 1 then Result := Result + 's';
+      end;
       Result := Result + ' of ';
     end;
     Result := Result + PillStrength2 + ' mg';
-  end;
+  end;                             }
   if Result = '' then Result := '(none)';
 
 end;

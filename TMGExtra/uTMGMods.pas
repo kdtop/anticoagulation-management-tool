@@ -92,7 +92,7 @@ begin
     else if Field = '%WARFARINSTARTDATE%'       then Result := Patient.StartDate
 
     else if Field = '%DOSEHOLDNUMOFDAYS%'       then Result := AFlowsheet.DoseHoldNumOfDays  //NOTICE -- Changed.  Was %DOCSHOLDNUMOFDAYS%
-    else if Field = '%DOSETAKENUMMGTODAY%'     then Result := AFlowsheet.DoseTakeNumMgToday  //NOTICE -- CHANGED. Was %DOCSTAKENUMTABSTODAY%
+    else if Field = '%DOSETAKENUMMGTODAY%'      then Result := AFlowsheet.DoseTakeNumMgToday  //NOTICE -- CHANGED. Was %DOCSTAKENUMTABSTODAY%
     else if Field = '%DOCSPTMOVEDAWAY%'         then Result := BOOL_0or1[AFlowsheet.DocsPtMoved]
     else if Field = '%DOCSPTTRANSFERTO%'        then Result := AFlowsheet.DocsPtTransferTo
     else if Field = '%DOCSPTVIOLATEAGREEMENT%'  then Result := BOOL_0or1[Patient.ViolatedAgreement]
